@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/constants/colors.dart';
+import 'package:planty/screens/home_screen.dart';
 import 'package:planty/screens/signup_screen.dart';
 import 'package:planty/widgets/primary_button.dart';
 import 'package:planty/services/auth_service.dart';
@@ -39,7 +40,11 @@ class _LoginScreenState extends State<LoginScreen> {
       final token = await AuthService().login(email, password);
       await _stoarge.write(key: 'token', value: token);
       print('로그인 성공, 토큰: $token');
-      // 홈화면으로 이동 구현하기
+      if (!mounted) return; // context 보호
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
     } catch (e) {
       _showError('로그인에 실패했습니다. ${e.toString()}');
     } finally {
