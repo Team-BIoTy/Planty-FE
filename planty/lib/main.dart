@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planty/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,9 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Planty',
-      home: Scaffold(body: Center(child: Text('Planty'))),
-    );
+    return MaterialApp(title: 'Planty', home: const SplashScreen());
   }
 }
