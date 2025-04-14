@@ -1,49 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/constants/colors.dart';
-import 'package:planty/screens/signup_screen.dart';
-import 'package:planty/widgets/primary_button.dart';
 import 'package:planty/services/auth_service.dart';
 import 'package:planty/widgets/custom_text_field.dart';
+import 'package:planty/widgets/primary_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _stoarge = const FlutterSecureStorage();
+  final _confirmController = TextEditingController();
 
   bool _isLoading = false;
 
-  // 사용자가 입력한 이메일과 비밀번호를 가져옴
-  void _login() async {
+  void _signup() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    final confirmPassword = _confirmController.text.trim();
 
-    // 입력 유효성 체크
-    if (email.isEmpty || password.isEmpty) {
-      _showError('이메일과 비밀번호를 입력해주세요.');
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      _showError('모든 필드를 입력해주세요.');
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    if (password != confirmPassword) {
+      _showError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    setState(() => _isLoading = true);
 
     try {
-      final token = await AuthService().login(email, password);
-      await _stoarge.write(key: 'token', value: token);
-      print('로그인 성공, 토큰: $token');
-      // 홈화면으로 이동 구현하기
+      await AuthService().signup(email, password);
+      _showSuccess('회원가입이 완료되었습니다. 로그인해주세요.');
     } catch (e) {
-      _showError('로그인에 실패했습니다. ${e.toString()}');
+      _showError('회원가입 실패: ${e.toString()}');
     } finally {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -64,9 +64,37 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void _showSuccess(String message) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text('완료'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context); // 로그인 화면으로 복귀
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primary),
+        ),
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -74,11 +102,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '로그인  ',
+                  '회원가입',
                   style: TextStyle(
                     color: AppColors.primary,
                     fontSize: 35,
@@ -95,22 +122,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
               ),
               SizedBox(height: 20),
-              PrimaryButton(
-                onPressed: _login,
-                label: '로그인',
-                isLoading: _isLoading,
+              CustomTextField(
+                controller: _confirmController,
+                label: '비밀번호 확인',
+                obscureText: true,
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SignupScreen()),
-                  );
-                },
-                child: const Text(
-                  '아직 회원이 아니신가요? 회원가입',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
+              SizedBox(height: 20),
+              PrimaryButton(
+                onPressed: _signup,
+                label: '회원가입',
+                isLoading: _isLoading,
               ),
             ],
           ),
