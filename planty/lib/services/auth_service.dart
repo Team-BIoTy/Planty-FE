@@ -18,4 +18,16 @@ class AuthService {
       throw Exception('로그인 실패: ${response.statusCode}');
     }
   }
+
+  Future<void> signup(String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/auth/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('회원가입 실패: ${response.statusCode}');
+    }
+  }
 }
