@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/screens/home_screen.dart';
 import 'package:planty/screens/login_screen.dart';
+import 'package:planty/services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,17 +22,29 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLogin() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 2));
 
     final token = await storage.read(key: 'token');
-    final isLoggedIn = token != null && token.isNotEmpty;
+    print('읽은 토큰: $token');
 
-    if (isLoggedIn) {
-      // [추후] 토큰 유효성 검사 추가
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+    if (token != null && token.isNotEmpty) {
+      final isValid = await AuthService().validToken(token);
+
+      if (isValid) {
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+        return;
+      }
     }
+
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
   }
 
   @override

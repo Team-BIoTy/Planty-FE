@@ -30,4 +30,15 @@ class AuthService {
       throw Exception('회원가입 실패: ${response.statusCode}');
     }
   }
+
+  Future<bool> validToken(String token) async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/auth/validate'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    print('validateToken 응답 코드: ${response.statusCode}');
+
+    return response.statusCode == 200;
+  }
 }
