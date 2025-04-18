@@ -57,13 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : _plants.isEmpty
                 ? const Center(child: Text('등록된 식물이 없습니다.'))
-                : Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                : ListView(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
                   children: [
-                    const SizedBox(height: 15),
-                    // 정원 상단 UI
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      // 상단 UI
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -127,17 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: _plants.length,
-                        itemBuilder: (context, index) {
-                          return UserPlantCard(plant: _plants[index]);
-                        },
-                      ),
-                    ),
+
+                    // 식물 카드들
+                    ..._plants.map((plant) => UserPlantCard(plant: plant)),
                   ],
                 ),
       ),
+      // 하단바
       bottomNavigationBar: CustomBottomNavBar(currentIndex: 0, onTap: (_) {}),
     );
   }
