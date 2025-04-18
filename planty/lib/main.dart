@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:planty/screens/home_screen.dart';
-import 'package:planty/screens/login_screen.dart';
 import 'package:planty/screens/splash_screen.dart';
 
 void main() {
@@ -14,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Planty',
+      theme: ThemeData(fontFamily: 'NotoSansKR'),
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
