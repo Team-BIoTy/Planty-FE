@@ -57,8 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child:
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _plants.isEmpty
-                ? const Center(child: Text('등록된 식물이 없습니다.'))
                 : ListView(
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   children: [
@@ -129,8 +127,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 15),
 
-                    // 식물 카드들
-                    ..._plants.map((plant) => UserPlantCard(plant: plant)),
+                    // 식물 카드 or 빈 메시지
+                    if (_plants.isEmpty)
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Center(
+                          child: Text(
+                            '등록된 식물이 없습니다.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      ..._plants.map((plant) => UserPlantCard(plant: plant)),
                   ],
                 ),
       ),
