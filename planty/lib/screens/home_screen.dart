@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/screens/login_screen.dart';
+import 'package:planty/widgets/custom_app_bar.dart';
+import 'package:planty/widgets/custom_bottom_nav_bar.dart';
 import 'package:planty/widgets/user_plant_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,10 +18,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      // 상단바
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(61),
+        child: CustomAppBar(
+          leading: Image.asset('assets/images/planty_logo.png', height: 30),
+          trailing: Icon(
+            Icons.notifications_outlined,
+            color: AppColors.primary,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(height: 15),
             // 나의 정원, 총 개수, 식물 등록 버튼
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
@@ -99,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: CustomBottomNavBar(currentIndex: 0, onTap: (_) {}),
     );
   }
 }
