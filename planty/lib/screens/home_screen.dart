@@ -51,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+
+      // 바디
       body: SafeArea(
         child:
             _isLoading
@@ -132,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
       ),
+
       // 하단바
       bottomNavigationBar: CustomBottomNavBar(currentIndex: 0, onTap: (_) {}),
     );

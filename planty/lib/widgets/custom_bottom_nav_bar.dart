@@ -25,7 +25,7 @@ class CustomBottomNavBar extends StatelessWidget {
           _buildNavItem(context, Icons.home_filled, 0, '/home'),
           _buildNavItem(context, Icons.eco_rounded, 1, '/plants'),
           _buildNavItem(context, Icons.forum_rounded, 2, '/chat'),
-          _buildNavItem(context, Icons.person, 3, '/profile'),
+          _buildNavItem(context, Icons.person, 3, '/my'),
         ],
       ),
     );

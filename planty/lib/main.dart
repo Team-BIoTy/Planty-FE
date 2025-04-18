@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/screens/home_screen.dart';
+import 'package:planty/screens/my_screen.dart';
 import 'package:planty/screens/splash_screen.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/plants': (context) => const HomeScreen(),
         '/chat': (context) => const HomeScreen(),
-        '/profile': (context) => const HomeScreen(),
+        '/my': (context) => const MyScreen(),
       },
     );
   }
