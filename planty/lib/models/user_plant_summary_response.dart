@@ -45,7 +45,7 @@ class Status {
       temperatureScore: json['temperatureScore'],
       lightScore: json['lightScore'],
       humidityScore: json['humidityScore'],
-      message: json['message'],
+      message: json['message'].replaceAll(r'\\n', '\n'),
     );
   }
 }

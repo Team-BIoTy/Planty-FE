@@ -21,7 +21,7 @@ class UserPlantService {
     );
 
     if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
+      final List data = jsonDecode(utf8.decode(response.bodyBytes));
       return data.map((e) => UserPlantSummaryResponse.fromJson(e)).toList();
     } else {
       throw Exception('식물 목록 불러오기 실패');
