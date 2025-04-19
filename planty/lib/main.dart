@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planty/screens/home_screen.dart';
 import 'package:planty/screens/my_screen.dart';
+import 'package:planty/screens/plant_dictionary_screen.dart';
 import 'package:planty/screens/splash_screen.dart';
 
 void main() {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/home': (context) => const HomeScreen(),
-        '/plants': (context) => const HomeScreen(),
+        '/plants': (context) => const PlantDictionaryScreen(),
         '/chat': (context) => const HomeScreen(),
         '/my': (context) => const MyScreen(),
       },
