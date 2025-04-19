@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
+import 'package:planty/screens/register_plant/plant_list_screen.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
@@ -89,36 +90,46 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                           // 식물 등록 버튼
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: AppColors.primary,
-                                width: 0.5,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PlantListScreen(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.primary,
+                                  width: 0.5,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.add_circle_rounded,
-                                    color: AppColors.primary,
-                                    size: 15,
-                                  ),
-                                  const SizedBox(width: 3),
-                                  Text(
-                                    '식물 등록',
-                                    style: TextStyle(
-                                      fontSize: 10,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.add_circle_rounded,
                                       color: AppColors.primary,
-                                      fontWeight: FontWeight.w600,
+                                      size: 15,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      '식물 등록',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
