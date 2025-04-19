@@ -20,13 +20,7 @@ class _MyScreenState extends State<MyScreen> {
       // 상단바
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(61),
-        child: CustomAppBar(
-          leading: Image.asset('assets/images/planty_logo.png', height: 30),
-          trailing: Icon(
-            Icons.notifications_outlined,
-            color: AppColors.primary,
-          ),
-        ),
+        child: CustomAppBar(trailingType: AppBarTrailingType.notification),
       ),
 
       // 바디
