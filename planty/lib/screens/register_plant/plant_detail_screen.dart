@@ -4,6 +4,7 @@ import 'package:planty/models/plant_info_detail.dart';
 import 'package:planty/services/plant_info_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/detail_info_section.dart';
+import 'package:planty/widgets/primary_button.dart';
 
 class PlantDetailScreen extends StatefulWidget {
   final int? plantId;
@@ -156,6 +157,29 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                     ],
                   ),
                 ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16),
+        height: 80,
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.light, width: 1)),
+          color: Colors.white,
+        ),
+
+        child: Center(
+          child: PrimaryButton(
+            label: '등록하기',
+            onPressed: () => {},
+            width: 350,
+            height: 38,
+            fontSize: 13,
+            icon: const Icon(
+              Icons.add_circle_rounded,
+              color: Colors.white,
+              size: 16,
+            ),
+          ),
+        ),
       ),
     );
   }
