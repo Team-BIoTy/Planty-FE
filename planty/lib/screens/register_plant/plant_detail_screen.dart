@@ -3,6 +3,7 @@ import 'package:planty/constants/colors.dart';
 import 'package:planty/models/plant_info_detail.dart';
 import 'package:planty/services/plant_info_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
+import 'package:planty/widgets/detail_info_section.dart';
 
 class PlantDetailScreen extends StatefulWidget {
   final int? plantId;
@@ -60,33 +61,97 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(color: Colors.white),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // 식물 이미지
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.network(
+                                _plant!.imageUrl ??
+                                    'https://nongsaro.go.kr/cms_contents/301/12938_MF_ATTACH_01.jpg',
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            // 식물 이름, 영문명
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _plant!.commonName ?? '',
+                                    style: TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  Text(
+                                    _plant!.englishName ?? '',
+                                    style: TextStyle(
+                                      color: AppColors.primary,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        height: 16,
+                        color: AppColors.primary.withOpacity(0.5),
+                        thickness: 0.5,
+                      ),
+                      const SizedBox(height: 16),
                       Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(
                             _plant!.imageUrl ??
                                 'https://nongsaro.go.kr/cms_contents/301/12938_MF_ATTACH_01.jpg',
-                            width: 200,
-                            height: 200,
+                            width: 300,
+                            height: 300,
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        _plant!.commonName ?? '',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
+                      const SizedBox(height: 16),
+                      Divider(
+                        height: 16,
+                        color: AppColors.primary.withOpacity(0.5),
+                        thickness: 0.5,
                       ),
-                      Text(
-                        _plant!.englishName ?? '',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.primary,
-                        ),
+                      SizedBox(height: 16),
+                      DetailInfoSection(
+                        title: '기본 정보',
+                        infoMap: _plant!.toBasicInfoMap(),
+                      ),
+
+                      DetailInfoSection(
+                        title: '상세 정보',
+                        infoMap: _plant!.toDetailInfoMap(),
+                      ),
+
+                      DetailInfoSection(
+                        title: '관리 정보',
+                        infoMap: _plant!.toCareInfoMap(),
+                      ),
+
+                      DetailInfoSection(
+                        title: '기능성 정보',
+                        infoMap: {'': _plant!.functionalInfo},
+                        showKey: false,
                       ),
                     ],
                   ),

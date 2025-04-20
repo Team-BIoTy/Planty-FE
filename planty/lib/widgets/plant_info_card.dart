@@ -19,7 +19,10 @@ class PlantInfoCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.primary, width: 0.5),
+          bottom: BorderSide(
+            color: AppColors.primary.withOpacity(0.5),
+            width: 0.5,
+          ),
         ),
         color: Colors.white,
       ),
