@@ -60,12 +60,14 @@ class _PlantListScreenState extends State<PlantListScreen> {
                       final plant = _plantsList[index];
                       return GestureDetector(
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => PlantDetailScreen(plantId: plant.id),
-                          //   ),
-                          // );
+                          print('눌린 식물 ID: ${plant.id}');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => PlantDetailScreen(plantId: plant.id),
+                            ),
+                          );
                         },
                         child: PlantInfoCard(
                           imageUrl: plant.imageUrl,
