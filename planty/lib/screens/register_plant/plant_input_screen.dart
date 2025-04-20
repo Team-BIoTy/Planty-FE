@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
+import 'package:planty/widgets/custom_text_field.dart';
 import 'package:planty/widgets/primary_button.dart';
 
 class PlantInputScreen extends StatefulWidget {
@@ -27,6 +27,8 @@ class PlantInputScreen extends StatefulWidget {
 
 class _PlantInputScreenState extends State<PlantInputScreen> {
   File? _imageFile;
+  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _adoptedDateController = TextEditingController();
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -35,6 +37,37 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _selectAdoptionDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              onSurface: AppColors.primary,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      String formatted = DateFormat('yyyy.MM.dd').format(pickedDate);
+      setState(() {
+        _adoptedDateController.text = formatted;
       });
     }
   }
@@ -142,12 +175,99 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
               Divider(
                 height: 16,
                 color: AppColors.primary.withOpacity(0.5),
                 thickness: 0.5,
+              ),
+              const SizedBox(height: 16),
+
+              // 애칭
+              Text(
+                '애칭',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _nicknameController,
+                style: TextStyle(fontSize: 12),
+                decoration: InputDecoration(
+                  hintText: '애칭을 입력해주세요',
+                  hintStyle: TextStyle(color: AppColors.grey3, fontSize: 12),
+                  border: OutlineInputBorder(),
+
+                  // 포커스 안 됐을 때 테두리
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.grey3),
+                  ),
+
+                  // 포커스 됐을 때 테두리
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // 입양 날짜
+              Text(
+                '입양 날짜',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                readOnly: true,
+                controller: _adoptedDateController,
+                onTap: _selectAdoptionDate,
+                style: TextStyle(fontSize: 12),
+                decoration: InputDecoration(
+                  hintText: 'YYYY.MM.DD',
+                  hintStyle: TextStyle(color: AppColors.grey3, fontSize: 12),
+                  suffixIcon: Icon(
+                    Icons.calendar_today,
+                    size: 16,
+                    color: AppColors.grey3,
+                  ),
+                  border: OutlineInputBorder(),
+
+                  // 포커스 안 됐을 때 테두리
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.grey3),
+                  ),
+
+                  // 포커스 됐을 때 테두리
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 성격
+              Text(
+                '성격',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
