@@ -140,4 +140,68 @@ class PlantInfoDetail {
       functionalInfo: json['functionalInfo'],
     );
   }
+
+  // 한글 매핑 메서드
+  // 기본 정보
+  Map<String, String?> toBasicInfoMap() {
+    return {
+      '학명': _formatValue(scientificName),
+      '영명': _formatValue(englishName),
+      '유통명': _formatValue(tradeName),
+      '원산지': _formatValue(origin),
+      'TIP': _formatValue(careTip),
+    };
+  }
+
+  // 상세 정보
+  Map<String, String?> toDetailInfoMap() {
+    return {
+      '분류': _formatValue(category),
+      '생육형태': _formatValue(growthForm),
+      '생장높이(cm)': _formatValue(growthHeight?.toString()),
+      '생장너비(cm)': _formatValue(growthWidth?.toString()),
+      '실내정원구성': _formatValue(indoorGardenUse),
+      '생태형': _formatValue(ecologicalType),
+      '잎형태': _formatValue(leafShape),
+      '잎무늬': _formatValue(leafPattern),
+      '잎색': _formatValue(leafColor),
+      '꽃피는 계절': _formatValue(floweringSeason),
+      '꽃색': _formatValue(flowerColor),
+      '열매맺는 계절': _formatValue(fruitingSeason),
+      '열매색': _formatValue(fruitColor),
+      '향기': _formatValue(fragrance),
+      '번식방법': _formatValue(propagationMethod),
+      '번식시기': _formatValue(propagationSeason),
+    };
+  }
+
+  // 관리 정보
+  Map<String, String?> toCareInfoMap() {
+    return {
+      '관리수준': _formatValue(careLevel),
+      '관리요구도': _formatValue(careDifficulty),
+      '광요구도': _formatValue(lightRequirement),
+      '배치장소': _formatValue(placement),
+      '생장속도': _formatValue(growthRate),
+      '생육적온': _formatValue(optimalTemperature),
+      '겨울최저온도': _formatValue(minWinterTemperature),
+      '습도': _formatValue(humidity),
+      '비료': _formatValue(fertilizer),
+      '토양': _formatValue(soilType),
+      '물주기-봄': _formatValue(wateringSpring),
+      '물주기-여름': _formatValue(wateringSummer),
+      '물주기-가을': _formatValue(wateringAutumn),
+      '물주기-겨울': _formatValue(wateringWinter),
+      '병충해': _formatValue(pestsDiseases),
+    };
+  }
+
+  // 기능성 정보
+  Map<String, String?> toFunctionInfoMap() {
+    return {'기능성 정보': functionalInfo};
+  }
+
+  String _formatValue(String? value) {
+    return value == null || value.trim().isEmpty ? '-' : value;
+  }
 }
