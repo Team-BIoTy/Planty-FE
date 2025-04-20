@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/plant_info_detail.dart';
+import 'package:planty/screens/register_plant/plant_input_screen.dart';
 import 'package:planty/services/plant_info_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/detail_info_section.dart';
@@ -169,7 +170,14 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         child: Center(
           child: PrimaryButton(
             label: '등록하기',
-            onPressed: () => {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PlantInputScreen(plantId: _plant!.id!),
+                ),
+              );
+            },
             width: 350,
             height: 38,
             fontSize: 13,
