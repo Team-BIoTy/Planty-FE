@@ -174,7 +174,13 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => PlantInputScreen(plantId: _plant!.id!),
+                  builder:
+                      (_) => PlantInputScreen(
+                        plantId: _plant!.id!,
+                        imageUrl: _plant!.imageUrl ?? '',
+                        commonName: _plant!.commonName ?? '',
+                        englishName: _plant!.englishName ?? '',
+                      ),
                 ),
               );
             },

@@ -1,12 +1,43 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/primary_button.dart';
 
-class PlantInputScreen extends StatelessWidget {
+class PlantInputScreen extends StatefulWidget {
   final int plantId;
+  final String imageUrl;
+  final String commonName;
+  final String englishName;
 
-  const PlantInputScreen({super.key, required this.plantId});
+  const PlantInputScreen({
+    super.key,
+    required this.plantId,
+    required this.imageUrl,
+    required this.commonName,
+    required this.englishName,
+  });
+
+  @override
+  State<PlantInputScreen> createState() => _PlantInputScreenState();
+}
+
+class _PlantInputScreenState extends State<PlantInputScreen> {
+  File? _imageFile;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +50,109 @@ class PlantInputScreen extends StatelessWidget {
           titleText: '정보 입력',
         ),
       ),
-      body: Center(child: Text('선택한 plantId: $plantId')),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                decoration: BoxDecoration(color: Colors.white),
+                // 상단 식물 정보
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // 식물 이미지
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(
+                        widget.imageUrl,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    // 식물 이름, 영문명
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.commonName,
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                          Text(
+                            widget.englishName,
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 16,
+                color: AppColors.primary.withOpacity(0.5),
+                thickness: 0.5,
+              ),
+              const SizedBox(height: 16),
+
+              // 대표 이미지 선택
+              GestureDetector(
+                onTap: _pickImage,
+                child: Center(
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey1,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child:
+                        _imageFile != null
+                            ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(_imageFile!, fit: BoxFit.cover),
+                            )
+                            : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(
+                                  Icons.local_florist,
+                                  size: 40,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  "대표 사진을 등록해주세요",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              Divider(
+                height: 16,
+                color: AppColors.primary.withOpacity(0.5),
+                thickness: 0.5,
+              ),
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         height: 80,
