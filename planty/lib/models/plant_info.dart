@@ -13,7 +13,7 @@ class PlantInfo {
 
   factory PlantInfo.fromJson(Map<String, dynamic> json) {
     return PlantInfo(
-      id: json['id'] as int?,
+      id: json['plantInfoId'] as int,
       commonName: json['commonName'],
       englishName: json['englishName'],
       imageUrl: json['imageUrl'] as String?,
