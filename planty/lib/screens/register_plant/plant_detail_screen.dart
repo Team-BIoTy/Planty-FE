@@ -5,7 +5,7 @@ import 'package:planty/screens/register_plant/plant_input_screen.dart';
 import 'package:planty/services/plant_info_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/detail_info_section.dart';
-import 'package:planty/widgets/primary_button.dart';
+import 'package:planty/widgets/register_bottom_bar.dart';
 
 class PlantDetailScreen extends StatefulWidget {
   final int? plantId;
@@ -159,41 +159,21 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                   ),
                 ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        height: 80,
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: AppColors.light, width: 1)),
-          color: Colors.white,
-        ),
-
-        child: Center(
-          child: PrimaryButton(
-            label: '등록하기',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (_) => PlantInputScreen(
-                        plantId: _plant!.id!,
-                        imageUrl: _plant!.imageUrl ?? '',
-                        commonName: _plant!.commonName ?? '',
-                        englishName: _plant!.englishName ?? '',
-                      ),
-                ),
-              );
-            },
-            width: 350,
-            height: 38,
-            fontSize: 13,
-            icon: const Icon(
-              Icons.add_circle_rounded,
-              color: Colors.white,
-              size: 16,
+      bottomNavigationBar: RegisterBottomBar(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (_) => PlantInputScreen(
+                    plantId: _plant!.id!,
+                    imageUrl: _plant!.imageUrl ?? '',
+                    commonName: _plant!.commonName ?? '',
+                    englishName: _plant!.englishName ?? '',
+                  ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
