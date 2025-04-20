@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:planty/constants/colors.dart';
+import 'package:planty/models/personality.dart';
+import 'package:planty/services/personality_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
-import 'package:planty/widgets/custom_text_field.dart';
 import 'package:planty/widgets/primary_button.dart';
 
 class PlantInputScreen extends StatefulWidget {
@@ -27,8 +28,24 @@ class PlantInputScreen extends StatefulWidget {
 
 class _PlantInputScreenState extends State<PlantInputScreen> {
   File? _imageFile;
+  List<Personality> _personalities = [];
+  int? _selectedPersonalityId;
+  bool _isLoadingPersonalities = true;
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _adoptedDateController = TextEditingController();
+
+  Future<void> _fetchPersonalities() async {
+    try {
+      final personalities = await PersonalityService().fetchPersonalities();
+      setState(() {
+        _personalities = personalities;
+        _isLoadingPersonalities = false;
+      });
+    } catch (e) {
+      print('성격 불러오기 실패: $e');
+      setState(() => _isLoadingPersonalities = false);
+    }
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -39,6 +56,12 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
         _imageFile = File(pickedFile.path);
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPersonalities();
   }
 
   Future<void> _selectAdoptionDate() async {
@@ -196,6 +219,7 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
                 controller: _nicknameController,
                 style: TextStyle(fontSize: 12),
                 decoration: InputDecoration(
+                  isDense: true,
                   hintText: '애칭을 입력해주세요',
                   hintStyle: TextStyle(color: AppColors.grey3, fontSize: 12),
                   border: OutlineInputBorder(),
@@ -233,6 +257,7 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
                 onTap: _selectAdoptionDate,
                 style: TextStyle(fontSize: 12),
                 decoration: InputDecoration(
+                  isDense: true,
                   hintText: 'YYYY.MM.DD',
                   hintStyle: TextStyle(color: AppColors.grey3, fontSize: 12),
                   suffixIcon: Icon(
@@ -258,7 +283,6 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
 
               // 성격
@@ -269,6 +293,88 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              const SizedBox(height: 8),
+              // 성격 선택 UI
+              _isLoadingPersonalities
+                  ? const Center(child: CircularProgressIndicator())
+                  : Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children:
+                        _personalities.map((personality) {
+                          final isSelected =
+                              personality.id == _selectedPersonalityId;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    // 같은 거 누르면 취소
+                                    if (_selectedPersonalityId ==
+                                        personality.id) {
+                                      _selectedPersonalityId = null;
+                                    } else {
+                                      _selectedPersonalityId = personality.id;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width -
+                                      40, // 전체 너비
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isSelected
+                                            ? AppColors.light
+                                            : Colors.white,
+                                    border: Border.all(
+                                      color:
+                                          isSelected
+                                              ? AppColors.primary
+                                              : AppColors.grey3,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    '${personality.label} ${personality.emoji} | ${personality.description}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.primary,
+                                      fontWeight:
+                                          isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.w100,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // 선택됐을 때만 예시 멘트 표시
+                              if (isSelected) ...[
+                                const SizedBox(height: 6),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width - 40,
+
+                                  child: Text(
+                                    '"${personality.exampleComment}"',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        }).toList(),
+                  ),
             ],
           ),
         ),
