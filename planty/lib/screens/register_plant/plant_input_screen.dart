@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/personality.dart';
+import 'package:planty/models/register_plant.dart';
+import 'package:planty/screens/register_plant/iot_device_select_screen.dart';
 import 'package:planty/services/personality_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/register_bottom_bar.dart';
@@ -379,7 +381,33 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: RegisterBottomBar(onPressed: () => {}),
+      bottomNavigationBar: RegisterBottomBar(
+        onPressed: () {
+          if (_nicknameController.text.isEmpty ||
+              _adoptedDateController.text.isEmpty ||
+              _selectedPersonalityId == null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('모든 정보를 입력해주세요.')));
+            return;
+          }
+
+          final data = RegisterPlant(
+            plantId: widget.plantId,
+            nickname: _nicknameController.text,
+            adoptedDate: _adoptedDateController.text,
+            personalityId: _selectedPersonalityId!,
+            imageFile: _imageFile,
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => IoTDeviceSelectScreen(data: data),
+            ),
+          );
+        },
+      ),
     );
   }
 }
