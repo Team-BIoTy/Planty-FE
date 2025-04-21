@@ -167,7 +167,11 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               builder:
                   (_) => PlantInputScreen(
                     plantId: _plant!.id!,
-                    imageUrl: _plant!.imageUrl ?? '',
+                    imageUrl:
+                        _plant!.imageUrl?.isNotEmpty == true
+                            ? _plant!.imageUrl!
+                            : 'https://nongsaro.go.kr/cms_contents/301/12938_MF_ATTACH_01.jpg',
+
                     commonName: _plant!.commonName ?? '',
                     englishName: _plant!.englishName ?? '',
                   ),
