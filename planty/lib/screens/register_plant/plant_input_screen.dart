@@ -90,7 +90,7 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
     );
 
     if (pickedDate != null) {
-      String formatted = DateFormat('yyyy.MM.dd').format(pickedDate);
+      String formatted = DateFormat('yyyy-MM-dd').format(pickedDate);
       setState(() {
         _adoptedDateController.text = formatted;
       });

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/iot_device.dart';
 import 'package:planty/models/register_plant.dart';
+import 'package:planty/screens/register_plant/register_complete_screen.dart';
 import 'package:planty/services/iot_device_service.dart';
+import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/primary_button.dart';
 import 'package:planty/widgets/register_bottom_bar.dart';
@@ -147,9 +149,45 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
         ),
       ),
       bottomNavigationBar: RegisterBottomBar(
-        onPressed: () {
-          // TODO: 등록 로직 (API 호출)
-          print('선택된 deviceId: $_selectedDeviceId');
+        onPressed: () async {
+          if (_selectedDeviceId == null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('IoT 디바이스를 선택해주세요')));
+            return;
+          }
+
+          try {
+            // 1. 반려식물 등록
+            final userPlantId = await UserPlantService().registerUserPlant(
+              widget.data.plantId,
+              widget.data.nickname,
+              widget.data.adoptedDate,
+              widget.data.personalityId,
+            );
+
+            // 2. IoT 기기 연결
+            await UserPlantService().registerIotDevice(
+              userPlantId,
+              _selectedDeviceId!,
+            );
+
+            // 3. 완료 화면 이동 또는 오류 알림
+            if (!mounted) return;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) =>
+                        RegisterCompleteScreen(nickname: widget.data.nickname),
+              ),
+            );
+          } catch (e) {
+            print('등록 실패: $e');
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('등록 중 오류가 발생했습니다')));
+          }
         },
       ),
     );
