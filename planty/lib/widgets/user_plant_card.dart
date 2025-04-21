@@ -10,6 +10,8 @@ class UserPlantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = plant.status;
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       padding: EdgeInsets.all(16),
@@ -97,19 +99,19 @@ class UserPlantCard extends StatelessWidget {
                             PlantStatusBtn(
                               icon: Icons.thermostat_rounded,
                               iconColor: AppColors.grey2,
-                              score: plant.status.temperatureScore,
+                              score: status?.temperatureScore ?? 0,
                             ),
                             SizedBox(width: 15),
                             PlantStatusBtn(
                               icon: Icons.wb_sunny_rounded,
                               iconColor: AppColors.grey2,
-                              score: plant.status.lightScore,
+                              score: status?.lightScore ?? 0,
                             ),
                             SizedBox(width: 15),
                             PlantStatusBtn(
                               icon: Icons.water_drop_rounded,
                               iconColor: AppColors.grey2,
-                              score: plant.status.humidityScore,
+                              score: status?.humidityScore ?? 0,
                             ),
                           ],
                         ),
@@ -130,7 +132,7 @@ class UserPlantCard extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   child: Text(
-                    plant.status.message,
+                    status?.message ?? '-',
                     style: TextStyle(fontSize: 13),
                     textAlign: TextAlign.center,
                   ),
