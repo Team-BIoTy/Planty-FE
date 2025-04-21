@@ -24,21 +24,23 @@ class RegisterBottomBar extends StatelessWidget {
       size: 16,
     );
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      height: 80,
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: AppColors.light, width: 1)),
-        color: Colors.white,
-      ),
-      child: Center(
-        child: PrimaryButton(
-          label: label,
-          onPressed: onPressed,
-          width: 350,
-          height: 38,
-          fontSize: 13,
-          icon: showIcon ? (icon ?? defaultIcon) : null,
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        height: 70,
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.light, width: 1)),
+          color: Colors.white,
+        ),
+        child: Center(
+          child: PrimaryButton(
+            label: label,
+            onPressed: onPressed,
+            width: 350,
+            height: 38,
+            fontSize: 13,
+            icon: showIcon ? (icon ?? defaultIcon) : null,
+          ),
         ),
       ),
     );
