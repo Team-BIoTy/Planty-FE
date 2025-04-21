@@ -164,6 +164,7 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
               widget.data.nickname,
               widget.data.adoptedDate,
               widget.data.personalityId,
+              widget.data.imageUrl,
             );
 
             // 2. IoT 기기 연결

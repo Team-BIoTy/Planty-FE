@@ -33,6 +33,7 @@ class UserPlantService {
     String nickname,
     String adoptedDate,
     int? personalityId,
+    String imageUrl,
   ) async {
     final token = await _storage.read(key: 'token');
     if (token == null) throw Exception('토큰 없음');
@@ -47,7 +48,7 @@ class UserPlantService {
         'nickname': nickname,
         'adoptedAt': adoptedDate,
         'personalityId': personalityId,
-        'imageUrl': '',
+        'imageUrl': imageUrl,
       }),
     );
 

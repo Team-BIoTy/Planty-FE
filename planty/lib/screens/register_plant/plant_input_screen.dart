@@ -398,6 +398,7 @@ class _PlantInputScreenState extends State<PlantInputScreen> {
             adoptedDate: _adoptedDateController.text,
             personalityId: _selectedPersonalityId!,
             imageFile: _imageFile,
+            imageUrl: widget.imageUrl,
           );
 
           Navigator.push(

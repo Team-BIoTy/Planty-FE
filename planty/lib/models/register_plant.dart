@@ -6,6 +6,7 @@ class RegisterPlant {
   final String adoptedDate;
   final int personalityId;
   final File? imageFile;
+  final String imageUrl;
 
   RegisterPlant({
     required this.plantId,
@@ -13,5 +14,6 @@ class RegisterPlant {
     required this.adoptedDate,
     required this.personalityId,
     this.imageFile,
+    required this.imageUrl,
   });
 }
