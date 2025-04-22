@@ -3,7 +3,7 @@ class UserPlantSummaryResponse {
   final String nickname;
   final String imageUrl;
   final DateTime adoptedAt;
-  final Status status;
+  final Status? status;
   final Personality personality;
 
   UserPlantSummaryResponse({
@@ -21,7 +21,7 @@ class UserPlantSummaryResponse {
       nickname: json['nickname'],
       imageUrl: json['imageUrl'],
       adoptedAt: DateTime.parse(json['adoptedAt']),
-      status: Status.fromJson(json['status']),
+      status: json['status'] != null ? Status.fromJson(json['status']) : null,
       personality: Personality.fromJson(json['personality']),
     );
   }
@@ -42,10 +42,10 @@ class Status {
 
   factory Status.fromJson(Map<String, dynamic> json) {
     return Status(
-      temperatureScore: json['temperatureScore'],
-      lightScore: json['lightScore'],
-      humidityScore: json['humidityScore'],
-      message: json['message'].replaceAll(r'\\n', '\n'),
+      temperatureScore: json['temperatureScore'] ?? 0,
+      lightScore: json['lightScore'] ?? 0,
+      humidityScore: json['humidityScore'] ?? 0,
+      message: (json['message'] ?? '-').replaceAll(r'\\n', '\n'),
     );
   }
 }

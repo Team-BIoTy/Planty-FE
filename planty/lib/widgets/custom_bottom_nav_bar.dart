@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
+import 'package:planty/screens/home_screen.dart';
+import 'package:planty/screens/my_screen.dart';
+import 'package:planty/screens/plant_dictionary_screen.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -39,12 +42,39 @@ class CustomBottomNavBar extends StatelessWidget {
   ) {
     final isSelected = currentIndex == index;
     return GestureDetector(
-      onTap: () => Navigator.pushReplacementNamed(context, routeName),
+      onTap: () {
+        if (!isSelected) {
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder:
+                  (context, animation, secondaryAnimation) =>
+                      _getScreenByRoute(routeName),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
+        }
+      },
       child: Icon(
         icon,
         color: isSelected ? AppColors.primary : AppColors.light,
         size: 28,
       ),
     );
+  }
+
+  Widget _getScreenByRoute(String routeName) {
+    switch (routeName) {
+      case '/home':
+        return const HomeScreen();
+      case '/plants':
+        return const PlantDictionaryScreen();
+      case '/chat':
+        return const HomeScreen();
+      case '/my':
+        return const MyScreen();
+      default:
+        return const HomeScreen();
+    }
   }
 }

@@ -27,4 +27,52 @@ class UserPlantService {
       throw Exception('식물 목록 불러오기 실패');
     }
   }
+
+  Future<int> registerUserPlant(
+    int plantId,
+    String nickname,
+    String adoptedDate,
+    int? personalityId,
+    String imageUrl,
+  ) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+    final response = await http.post(
+      Uri.parse('$_baseUrl/user-plants'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'plantInfoId': plantId,
+        'nickname': nickname,
+        'adoptedAt': adoptedDate,
+        'personalityId': personalityId,
+        'imageUrl': imageUrl,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return int.parse(response.body); // userPlantId
+    } else {
+      throw Exception('반려식물 등록 실패');
+    }
+  }
+
+  Future<void> registerIotDevice(int userPlantId, int deviceId) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+    final response = await http.post(
+      Uri.parse('$_baseUrl/user-plants/$userPlantId/device'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'iotDeviceId': deviceId}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('IoT 기기 등록 실패');
+    }
+  }
 }

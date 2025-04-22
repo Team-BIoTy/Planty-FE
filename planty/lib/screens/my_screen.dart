@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:planty/constants/colors.dart';
 import 'package:planty/screens/login_screen.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
@@ -20,13 +19,7 @@ class _MyScreenState extends State<MyScreen> {
       // 상단바
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(61),
-        child: CustomAppBar(
-          leading: Image.asset('assets/images/planty_logo.png', height: 30),
-          trailing: Icon(
-            Icons.notifications_outlined,
-            color: AppColors.primary,
-          ),
-        ),
+        child: CustomAppBar(trailingType: AppBarTrailingType.notification),
       ),
 
       // 바디
