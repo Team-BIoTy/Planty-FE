@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:planty/models/user_plant_detail_response.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,6 +9,7 @@ class UserPlantService {
   final _storage = FlutterSecureStorage();
   final _baseUrl = 'http://localhost:8080';
 
+  // 사용자의 반려 식물 목록 불러오기 - 홈화면
   Future<List<UserPlantSummaryResponse>> fetchUserPlants() async {
     final token = await _storage.read(key: 'token');
     if (token == null) throw Exception('토큰 없음');
@@ -28,6 +30,28 @@ class UserPlantService {
     }
   }
 
+  // 사용자 반려 식물 상세 리포트
+  Future<UserPlantDetailResponse> fetchUserPlantDetail(int userPlantId) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/user-plants/$userPlantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return UserPlantDetailResponse.fromJson(data);
+    } else {
+      throw Exception('반려식물 상세 정보 조회 실패');
+    }
+  }
+
+  // 사용자 반려 식물 등록
   Future<int> registerUserPlant(
     int plantId,
     String nickname,
@@ -59,6 +83,7 @@ class UserPlantService {
     }
   }
 
+  // 반려식물에 IoT 기기 연결
   Future<void> registerIotDevice(int userPlantId, int deviceId) async {
     final token = await _storage.read(key: 'token');
     if (token == null) throw Exception('토큰 없음');

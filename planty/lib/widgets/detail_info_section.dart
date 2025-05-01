@@ -5,12 +5,14 @@ class DetailInfoSection extends StatelessWidget {
   final String title;
   final Map<String, String?> infoMap;
   final bool showKey;
+  final double size;
 
   const DetailInfoSection({
     super.key,
     required this.title,
     required this.infoMap,
     this.showKey = true,
+    this.size = 16,
   });
 
   @override
@@ -22,7 +24,7 @@ class DetailInfoSection extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: size,
             fontWeight: FontWeight.w600,
             color: AppColors.primary,
           ),
