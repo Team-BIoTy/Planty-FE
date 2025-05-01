@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:planty/screens/login_screen.dart';
+import 'package:planty/screens/onboarding/login_screen.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
-import 'package:planty/screens/home_screen.dart';
-import 'package:planty/screens/my_screen.dart';
-import 'package:planty/screens/plant_dictionary_screen.dart';
+import 'package:planty/screens/home/home_screen.dart';
+import 'package:planty/screens/my/my_screen.dart';
+import 'package:planty/screens/plant/plant_dictionary_screen.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
