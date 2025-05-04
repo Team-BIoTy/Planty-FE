@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
+import 'package:planty/screens/chat/chat_list_screen.dart';
 import 'package:planty/screens/home/home_screen.dart';
 import 'package:planty/screens/my/my_screen.dart';
 import 'package:planty/screens/plant/plant_dictionary_screen.dart';
@@ -70,7 +71,7 @@ class CustomBottomNavBar extends StatelessWidget {
       case '/plants':
         return const PlantDictionaryScreen();
       case '/chat':
-        return const HomeScreen();
+        return const ChatListScreen();
       case '/my':
         return const MyScreen();
       default:
