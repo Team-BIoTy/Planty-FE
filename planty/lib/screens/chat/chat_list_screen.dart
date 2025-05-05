@@ -36,6 +36,63 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
+  void _showChatStartFloatingButtons() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withOpacity(0.4),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _floatingDialogButton(
+                text: '식물 챗봇과 대화하기',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(width: 12),
+              _floatingDialogButton(
+                text: '내 반려식물과 대화하기',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
+  }
+
+  Widget _floatingDialogButton({
+    required String text,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: AppColors.primary,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: AppColors.primary),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        fixedSize: Size(160, 80),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +108,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             Padding(
               padding: const EdgeInsets.all(13),
               child: PrimaryButton(
-                onPressed: () => {},
+                onPressed: _showChatStartFloatingButtons,
                 label: '대화시작하기',
                 icon: Icon(Icons.add_circle_rounded, color: Colors.white),
                 height: 35,
