@@ -7,6 +7,7 @@ import 'package:planty/services/chat_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
 import 'package:planty/widgets/primary_button.dart';
+import 'package:planty/main.dart';
 
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
@@ -15,13 +16,30 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen> {
+class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
   List<ChatRoom> _chatRooms = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _fetchChatRooms();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
     _fetchChatRooms();
   }
 

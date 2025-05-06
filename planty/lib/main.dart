@@ -5,6 +5,9 @@ import 'package:planty/screens/my/my_screen.dart';
 import 'package:planty/screens/plant/plant_dictionary_screen.dart';
 import 'package:planty/screens/onboarding/splash_screen.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
+
 void main() {
   runApp(const MyApp());
 }
@@ -17,6 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Planty',
       theme: ThemeData(fontFamily: 'NotoSansKR'),
+      navigatorObservers: [routeObserver],
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
