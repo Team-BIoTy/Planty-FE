@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/chat_message.dart';
 import 'package:planty/services/chat_service.dart';
+import 'package:planty/widgets/chat_bubble.dart';
 import 'package:planty/widgets/chat_input_field.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 
@@ -16,6 +17,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final List<ChatMessage> _messages = [];
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
 
   @override
@@ -31,6 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
         _messages.addAll(messages);
         _isLoading = false;
       });
+      _scrollToBottom(animated: false);
     } catch (e) {
       print('메시지 불러오기 실패: $e');
       setState(() => _isLoading = false);
@@ -39,6 +42,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _sendMessage(String content) async {
     if (content.trim().isEmpty) return;
+
+    final userMessage = ChatMessage(
+      sender: 'USER',
+      message: content,
+      timestamp: DateTime.now(),
+    );
+
+    setState(() {
+      _messages.add(userMessage);
+      _controller.clear();
+    });
+    _scrollToBottom();
+
     try {
       final response = await ChatService().sendMessage(
         widget.chatRoomId,
@@ -46,11 +62,28 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       setState(() {
         _messages.add(response);
-        _controller.clear();
       });
+      _scrollToBottom();
     } catch (e) {
       print('메시지 전송 실패: $e');
     }
+  }
+
+  void _scrollToBottom({bool animated = true}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        final position = _scrollController.position.maxScrollExtent;
+        if (animated) {
+          _scrollController.animateTo(
+            position,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        } else {
+          _scrollController.jumpTo(position);
+        }
+      }
+    });
   }
 
   @override
@@ -75,11 +108,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     _isLoading
                         ? Center(child: CircularProgressIndicator())
                         : ListView.builder(
+                          controller: _scrollController,
                           padding: const EdgeInsets.all(16),
                           itemCount: _messages.length,
                           itemBuilder: (context, index) {
                             final message = _messages[index];
-                            return; // 챗버블
+                            return ChatBubble(message: message);
                           },
                         ),
               ),
