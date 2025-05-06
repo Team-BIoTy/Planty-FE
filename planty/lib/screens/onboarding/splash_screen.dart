@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/constants/colors.dart';
-import 'package:planty/screens/home_screen.dart';
-import 'package:planty/screens/login_screen.dart';
+import 'package:planty/screens/home/home_screen.dart';
+import 'package:planty/screens/onboarding/login_screen.dart';
 import 'package:planty/services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {

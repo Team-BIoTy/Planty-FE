@@ -85,7 +85,7 @@ class UserPlantCard extends StatelessWidget {
                           ),
                           // 날짜
                           Text(
-                            '함께 한 지 ${DateTime.now().difference(plant.adoptedAt).inDays}일째',
+                            '함께 한 지 ${DateTime.now().difference(plant.adoptedAt).inDays + 1}일째',
                             style: TextStyle(
                               color: AppColors.primary,
                               fontSize: 10,

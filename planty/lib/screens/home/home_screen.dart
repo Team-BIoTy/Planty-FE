@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
 import 'package:planty/screens/register_plant/plant_list_screen.dart';
-import 'package:planty/screens/user_plant_detail_screen.dart';
+import 'package:planty/screens/home/user_plant_detail_screen.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';

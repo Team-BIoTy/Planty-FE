@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
-import 'package:planty/screens/home_screen.dart';
+import 'package:planty/screens/home/home_screen.dart';
 import 'package:planty/widgets/primary_button.dart';
 
 class RegisterCompleteScreen extends StatelessWidget {
