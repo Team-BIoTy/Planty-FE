@@ -152,48 +152,63 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           final chat = _chatRooms[index];
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 32,
-                                  backgroundImage: NetworkImage(chat.imageUrl),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        chat.userPlantNickname,
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primary,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => ChatScreen(
+                                          chatRoomId: chat.chatRoomId,
                                         ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        chat.lastMessage,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.grey[850],
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 32,
+                                    backgroundImage: NetworkImage(
+                                      chat.imageUrl,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          chat.userPlantNickname,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primary,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          chat.lastMessage,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey[850],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  _formatTime(chat.lastSentAt),
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _formatTime(chat.lastSentAt),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 10,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
