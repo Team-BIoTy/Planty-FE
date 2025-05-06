@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/chat_message.dart';
+import 'package:planty/models/chat_room_detail.dart';
 import 'package:planty/services/chat_service.dart';
 import 'package:planty/widgets/chat_bubble.dart';
 import 'package:planty/widgets/chat_input_field.dart';
@@ -15,7 +16,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<ChatMessage> _messages = [];
+  ChatRoomDetail? _chatRoomDetail;
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
@@ -23,19 +24,21 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchMessages();
+    _fetchChatRoomDetail();
   }
 
-  Future<void> _fetchMessages() async {
+  Future<void> _fetchChatRoomDetail() async {
     try {
-      final messages = await ChatService().fetchMessages(widget.chatRoomId);
+      final detail = await ChatService().fetchChatRoomDetail(
+        widget.chatRoomId,
+      ); // 새로 만든 API
       setState(() {
-        _messages.addAll(messages);
+        _chatRoomDetail = detail;
         _isLoading = false;
       });
       _scrollToBottom(animated: false);
     } catch (e) {
-      print('메시지 불러오기 실패: $e');
+      print('채팅방 상세 불러오기 실패: $e');
       setState(() => _isLoading = false);
     }
   }
@@ -50,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     setState(() {
-      _messages.add(userMessage);
+      _chatRoomDetail?.messages.add(userMessage);
       _controller.clear();
     });
     _scrollToBottom();
@@ -61,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
         content,
       );
       setState(() {
-        _messages.add(response);
+        _chatRoomDetail?.messages.add(response);
       });
       _scrollToBottom();
     } catch (e) {
@@ -88,6 +91,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final messages = _chatRoomDetail?.messages ?? [];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -95,6 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: CustomAppBar(
           leadingType: AppBarLeadingType.back,
           trailingType: AppBarTrailingType.menu,
+          titleText: _chatRoomDetail?.userPlantNickname ?? '식물챗봇',
         ),
       ),
       body: GestureDetector(
@@ -110,10 +116,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         : ListView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.all(16),
-                          itemCount: _messages.length,
+                          itemCount: messages.length,
                           itemBuilder: (context, index) {
-                            final message = _messages[index];
-                            return ChatBubble(message: message);
+                            final message = messages[index];
+                            return ChatBubble(
+                              message: message,
+                              imageUrl: _chatRoomDetail?.imageUrl,
+                            );
                           },
                         ),
               ),

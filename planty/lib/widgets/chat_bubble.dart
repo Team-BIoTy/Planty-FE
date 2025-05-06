@@ -4,8 +4,9 @@ import 'package:planty/models/chat_message.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
+  final String? imageUrl;
 
-  const ChatBubble({super.key, required this.message});
+  const ChatBubble({super.key, required this.message, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +23,14 @@ class ChatBubble extends StatelessWidget {
               isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isUser) // 사진 처리해야함
+            if (!isUser)
               CircleAvatar(
-                radius: 16,
-                backgroundImage: null, // 반려 식물 이미지 또는 기본 이미지 넣기
+                radius: 22,
+                backgroundImage:
+                    (imageUrl != null && imageUrl!.isNotEmpty)
+                        ? NetworkImage(imageUrl!)
+                        : const AssetImage('assets/images/default_image.png')
+                            as ImageProvider,
               ),
             if (!isUser) SizedBox(width: 8),
             ConstrainedBox(

@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/models/chat_message.dart';
 import 'package:planty/models/chat_room.dart';
 import 'package:http/http.dart' as http;
+import 'package:planty/models/chat_room_detail.dart';
 
 class ChatService {
   final _storage = FlutterSecureStorage();
@@ -50,11 +51,11 @@ class ChatService {
     }
   }
 
-  // 채팅 메시지 불러오기
-  Future<List<ChatMessage>> fetchMessages(int chatRoomId) async {
+  // 채팅방 진입 시 (반려식물 기본정보 + 채팅 메시지 불러오기)
+  Future<ChatRoomDetail> fetchChatRoomDetail(int chatRoomId) async {
     final token = await _storage.read(key: 'token');
     final response = await http.get(
-      Uri.parse('$_baseUrl/chats/$chatRoomId/messages'),
+      Uri.parse('$_baseUrl/chats/$chatRoomId'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -62,10 +63,10 @@ class ChatService {
     );
 
     if (response.statusCode == 200) {
-      final List data = jsonDecode(utf8.decode(response.bodyBytes));
-      return data.map((e) => ChatMessage.fromJson(e)).toList();
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return ChatRoomDetail.fromJson(data);
     } else {
-      throw Exception('채팅 메시지 조회 실패');
+      throw Exception('채팅방 상세 조회 실패');
     }
   }
 
