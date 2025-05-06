@@ -27,4 +27,25 @@ class ChatService {
       throw Exception('채팅방 불러오기 실패: ${response.statusCode}');
     }
   }
+
+  Future<int> startChat({int? userPlantId}) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.post(
+      Uri.parse('$_baseUrl/chats'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'userPlantId': userPlantId}), // null도 가능
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return data['chatRoomId'];
+    } else {
+      throw Exception('채팅방 생성 실패: ${response.statusCode}');
+    }
+  }
 }

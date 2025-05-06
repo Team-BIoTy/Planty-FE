@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/chat_room.dart';
+import 'package:planty/screens/chat/chat_screen.dart';
+import 'package:planty/screens/chat/select_user_plant_screen.dart';
 import 'package:planty/services/chat_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
@@ -49,8 +51,22 @@ class _ChatListScreenState extends State<ChatListScreen> {
             children: [
               _floatingDialogButton(
                 text: '식물 챗봇과 대화하기',
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
+                  try {
+                    final chatRoomId = await ChatService().startChat(
+                      userPlantId: null,
+                    );
+                    if (!mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChatScreen(chatRoomId: chatRoomId),
+                      ),
+                    );
+                  } catch (e) {
+                    print('채팅방 생성 실패: $e');
+                  }
                 },
               ),
               const SizedBox(width: 12),
@@ -58,6 +74,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 text: '내 반려식물과 대화하기',
                 onPressed: () {
                   Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SelectUserPlantScreen(),
+                    ),
+                  );
                 },
               ),
             ],
