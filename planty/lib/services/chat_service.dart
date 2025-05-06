@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:planty/models/chat_message_response.dart';
 import 'package:planty/models/chat_room.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,6 +47,48 @@ class ChatService {
       return data['chatRoomId'];
     } else {
       throw Exception('채팅방 생성 실패: ${response.statusCode}');
+    }
+  }
+
+  // 채팅 메시지 불러오기
+  Future<List<ChatMessageResponse>> fetchMessages(int chatRoomId) async {
+    final token = await _storage.read(key: 'token');
+    final response = await http.get(
+      Uri.parse('$_baseUrl/chats/$chatRoomId/messages'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(utf8.decode(response.bodyBytes));
+      return data.map((e) => ChatMessageResponse.fromJson(e)).toList();
+    } else {
+      throw Exception('채팅 메시지 조회 실패');
+    }
+  }
+
+  // 채팅 전송
+  Future<ChatMessageResponse> sendMessage(
+    int chatRoomId,
+    String message,
+  ) async {
+    final token = await _storage.read(key: 'token');
+    final response = await http.post(
+      Uri.parse('$_baseUrl/chats/$chatRoomId/messages'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'message': message}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return ChatMessageResponse.fromJson(data);
+    } else {
+      throw Exception('메시지 전송 실패');
     }
   }
 }
