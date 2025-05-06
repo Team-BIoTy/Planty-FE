@@ -1,16 +1,16 @@
-class ChatMessageResponse {
+class ChatMessage {
   final String sender; // "USER" or "BOT"
   final String message;
   final DateTime timestamp;
 
-  ChatMessageResponse({
+  ChatMessage({
     required this.sender,
     required this.message,
     required this.timestamp,
   });
 
-  factory ChatMessageResponse.fromJson(Map<String, dynamic> json) {
-    return ChatMessageResponse(
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    return ChatMessage(
       sender: json['sender'],
       message: json['message'],
       timestamp: DateTime.parse(json['timestamp']),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
-import 'package:planty/models/chat_message_response.dart';
+import 'package:planty/models/chat_message.dart';
 import 'package:planty/services/chat_service.dart';
 import 'package:planty/widgets/chat_input_field.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
@@ -14,7 +14,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<ChatMessageResponse> _messages = [];
+  final List<ChatMessage> _messages = [];
   final TextEditingController _controller = TextEditingController();
   bool _isLoading = true;
 
