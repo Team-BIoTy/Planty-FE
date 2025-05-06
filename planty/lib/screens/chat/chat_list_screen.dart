@@ -186,10 +186,29 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                                 children: [
                                   CircleAvatar(
                                     radius: 32,
-                                    backgroundImage: NetworkImage(
-                                      chat.imageUrl,
+                                    backgroundImage: null,
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        chat.imageUrl,
+                                        width: 64,
+                                        height: 64,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return Image.asset(
+                                            'assets/images/default_image.png',
+                                            width: 64,
+                                            height: 64,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
+
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
