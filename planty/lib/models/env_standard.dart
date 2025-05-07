@@ -1,19 +1,21 @@
 class EnvStandard {
-  final Range temperature;
-  final Range light;
-  final Range humidity;
+  final Range? temperature;
+  final Range? light;
+  final Range? humidity;
 
-  EnvStandard({
-    required this.temperature,
-    required this.light,
-    required this.humidity,
-  });
+  EnvStandard({this.temperature, this.light, this.humidity});
 
-  factory EnvStandard.fromJson(Map<String, dynamic> json) {
+  factory EnvStandard.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return EnvStandard();
+
     return EnvStandard(
-      temperature: Range.fromJson(json['temperature']),
-      light: Range.fromJson(json['light']),
-      humidity: Range.fromJson(json['humidity']),
+      temperature:
+          json['temperature'] != null
+              ? Range.fromJson(json['temperature'])
+              : null,
+      light: json['light'] != null ? Range.fromJson(json['light']) : null,
+      humidity:
+          json['humidity'] != null ? Range.fromJson(json['humidity']) : null,
     );
   }
 }
@@ -25,6 +27,6 @@ class Range {
   Range({required this.min, required this.max});
 
   factory Range.fromJson(Map<String, dynamic> json) {
-    return Range(min: json['min'], max: json['max']);
+    return Range(min: json['min'] ?? 0, max: json['max'] ?? 0);
   }
 }

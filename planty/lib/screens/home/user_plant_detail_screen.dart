@@ -233,8 +233,8 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                               ),
                               recommendedLabel: '권장 온도',
                               recommendedValue: formatRange(
-                                _plantDetail?.envStandard.temperature.min,
-                                _plantDetail?.envStandard.temperature.max,
+                                _plantDetail?.envStandard.temperature?.min,
+                                _plantDetail?.envStandard.temperature?.max,
                                 unit: '°C',
                               ),
                               averageLabel: '평균 온도',
@@ -252,8 +252,8 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                               ),
                               recommendedLabel: '권장 조도',
                               recommendedValue: formatRange(
-                                _plantDetail?.envStandard.light.min,
-                                _plantDetail?.envStandard.light.max,
+                                _plantDetail?.envStandard.light?.min,
+                                _plantDetail?.envStandard.light?.max,
                                 unit: 'Lux',
                               ),
                               averageLabel: '평균 조도',
@@ -271,8 +271,8 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                               ),
                               recommendedLabel: '권장 수분',
                               recommendedValue: formatRange(
-                                _plantDetail?.envStandard.humidity.min,
-                                _plantDetail?.envStandard.humidity.max,
+                                _plantDetail?.envStandard.humidity?.min,
+                                _plantDetail?.envStandard.humidity?.max,
                                 unit: '%',
                               ),
                               averageLabel: '평균 수분',
