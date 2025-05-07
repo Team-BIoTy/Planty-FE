@@ -170,7 +170,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                           final chat = _chatRooms[index];
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: GestureDetector(
+                            child: InkWell(
                               onTap: () {
                                 Navigator.push(
                                   context,
