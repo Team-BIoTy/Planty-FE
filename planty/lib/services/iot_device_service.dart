@@ -13,7 +13,7 @@ class IotDeviceService {
     if (token == null) throw Exception('토큰 없음');
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/iot-devices'),
+      Uri.parse('$_baseUrl/iot'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
