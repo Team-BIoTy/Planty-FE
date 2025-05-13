@@ -8,6 +8,7 @@ class IotDeviceService {
   final _storage = FlutterSecureStorage();
   final String _baseUrl = 'http://localhost:8080';
 
+  // IoT 기기 목록 불러오기
   Future<List<IotDevice>> fetchUserIotDevices() async {
     final token = await _storage.read(key: 'token');
     if (token == null) throw Exception('토큰 없음');
@@ -25,6 +26,28 @@ class IotDeviceService {
       return data.map((json) => IotDevice.fromJson(json)).toList();
     } else {
       throw Exception('IoT 디바이스 불러오기 실패');
+    }
+  }
+
+  // 버튼 액션 전송 (물주기, 팬켜기, 조명켜기)
+  Future<void> sendCommandToDevice({
+    required int userPlantId,
+    required String type, // "WATER", "FAN", "LIGHT"
+  }) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.post(
+      Uri.parse('$_baseUrl/iot/$userPlantId/actions'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'type': type}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('명령 전송 실패: ${response.statusCode}');
     }
   }
 }
