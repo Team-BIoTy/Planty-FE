@@ -101,20 +101,23 @@ class UserPlantCard extends StatelessWidget {
                             children: [
                               PlantStatusBtn(
                                 icon: Icons.thermostat_rounded,
-                                iconColor: AppColors.grey2,
                                 score: status?.temperatureScore ?? 0,
+                                commandType: 'FAN',
+                                userPlantId: plant.userPlantId,
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.wb_sunny_rounded,
-                                iconColor: AppColors.grey2,
                                 score: status?.lightScore ?? 0,
+                                commandType: 'LIGHT',
+                                userPlantId: plant.userPlantId,
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.water_drop_rounded,
-                                iconColor: AppColors.grey2,
                                 score: status?.humidityScore ?? 0,
+                                commandType: 'WATER',
+                                userPlantId: plant.userPlantId,
                               ),
                             ],
                           ),
