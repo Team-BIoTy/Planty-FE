@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
+import 'package:planty/screens/chat/chat_screen.dart';
+import 'package:planty/services/chat_service.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/detail_info_section.dart';
@@ -131,6 +133,9 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                                 // 닉네임
                                 Text(
                                   _plantDetail!.nickname,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 20,
@@ -165,7 +170,7 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
 
                                 // 날짜
                                 Text(
-                                  '함께 한 지 ${DateTime.now().difference(_plantDetail!.adoptedAt).inDays}일째',
+                                  '함께 한 지 ${DateTime.now().difference(_plantDetail!.adoptedAt).inDays + 1}일째',
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 14,
@@ -176,11 +181,30 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
 
                                 // 챗봇 버튼
                                 PrimaryButton(
-                                  onPressed: () => {},
-                                  label: "테리와 대화하기",
+                                  onPressed: () async {
+                                    try {
+                                      final chatRoomId = await ChatService()
+                                          .startChat(
+                                            userPlantId: widget.userPlantId,
+                                          );
+                                      if (!context.mounted) return;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => ChatScreen(
+                                                chatRoomId: chatRoomId,
+                                              ),
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      print('채팅 시작 실패: $e');
+                                    }
+                                  },
+                                  label: '대화하기',
                                   width: 110,
                                   height: 33,
-                                  fontSize: 11,
+                                  fontSize: 13,
                                 ),
                               ],
                             ),
