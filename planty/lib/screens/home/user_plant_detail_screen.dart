@@ -72,15 +72,18 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
               borderRadius: BorderRadius.circular(12),
             ),
             elevation: 2,
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
-                Navigator.push(
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
                         (_) => EditPlantScreen(userPlantId: widget.userPlantId),
                   ),
                 );
+                if (result == true) {
+                  await _fetchDeatil();
+                }
               } else if (value == 'delete') {
                 final rootContext = context;
                 showDialog(
