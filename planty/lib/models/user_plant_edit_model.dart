@@ -3,14 +3,12 @@ class UserPlantEditModel {
   final DateTime? adoptedAt;
   final bool? autoControlEnabled;
   final int? personalityId;
-  final int? deviceId;
 
   UserPlantEditModel({
     this.nickname,
     this.adoptedAt,
     this.autoControlEnabled,
     this.personalityId,
-    this.deviceId,
   });
 
   factory UserPlantEditModel.fromJson(Map<String, dynamic> json) {
@@ -19,7 +17,6 @@ class UserPlantEditModel {
       adoptedAt: DateTime.parse(json['adoptedAt']),
       autoControlEnabled: json['autoControlEnabled'],
       personalityId: json['personalityId'],
-      deviceId: json['deviceId'],
     );
   }
 
@@ -29,7 +26,6 @@ class UserPlantEditModel {
       if (adoptedAt != null) 'adoptedAt': adoptedAt!.toIso8601String(),
       if (autoControlEnabled != null) 'autoControlEnabled': autoControlEnabled,
       if (personalityId != null) 'personalityId': personalityId,
-      if (deviceId != null) 'deviceId': deviceId,
     };
   }
 }
