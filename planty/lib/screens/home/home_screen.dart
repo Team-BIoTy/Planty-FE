@@ -152,8 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ..._plants.map(
                         (plant) => UserPlantCard(
                           plant: plant,
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
@@ -162,6 +162,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                               ),
                             );
+
+                            // 삭제된 경우 새로고침
+                            if (result == true) {
+                              setState(() => _isLoading = true);
+                              await _fetchPlants();
+                            }
                           },
                         ),
                       ),

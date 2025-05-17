@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
 import 'package:planty/screens/chat/chat_screen.dart';
+import 'package:planty/screens/home/edit_user_plant_screen.dart';
 import 'package:planty/services/chat_service.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
@@ -64,6 +65,102 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
           leadingType: AppBarLeadingType.back,
           titleText: "상세 리포트",
           trailingType: AppBarTrailingType.menu,
+          customTrailingWidget: PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert_rounded, color: AppColors.primary),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 2,
+            onSelected: (value) {
+              if (value == 'edit') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => EditPlantScreen(userPlantId: widget.userPlantId),
+                  ),
+                );
+              } else if (value == 'delete') {
+                final rootContext = context;
+                showDialog(
+                  context: rootContext,
+                  builder: (_) {
+                    return AlertDialog(
+                      title: Text("삭제 확인", style: TextStyle(fontSize: 20)),
+                      content: const Text(
+                        "정말 삭제하시겠습니까?\n실시간 환경 기록과 채팅 내용이 모두 삭제됩니다.",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      backgroundColor: Colors.white,
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(rootContext).pop(),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            textStyle: TextStyle(fontSize: 14),
+                          ),
+                          child: Text("취소"),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            textStyle: TextStyle(fontSize: 14),
+                          ),
+                          onPressed: () async {
+                            Navigator.of(rootContext).pop();
+                            await Future.delayed(Duration(milliseconds: 100));
+
+                            try {
+                              await UserPlantService().deleteUserPlant(
+                                widget.userPlantId,
+                              );
+                              if (!mounted) return;
+                              Navigator.of(rootContext).pop(true);
+                            } catch (e) {
+                              print("삭제 실패: $e");
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(rootContext).showSnackBar(
+                                const SnackBar(content: Text('삭제에 실패했습니다.')),
+                              );
+                            }
+                          },
+                          child: Text("삭제"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Center(
+                      child: Text(
+                        '수정하기',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Center(
+                      child: Text(
+                        '삭제하기',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+          ),
         ),
       ),
       body:

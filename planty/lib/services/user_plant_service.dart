@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
+import 'package:planty/models/user_plant_edit.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -98,6 +99,23 @@ class UserPlantService {
 
     if (response.statusCode != 200) {
       throw Exception('IoT 기기 등록 실패');
+    }
+  }
+  // 반려식물 삭제
+  Future<void> deleteUserPlant(int userPlantId) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/user-plants/$userPlantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('반려식물 삭제 실패');
     }
   }
 }
