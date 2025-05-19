@@ -330,16 +330,44 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                                 color: AppColors.primary,
                               ),
                             ),
-                            Text(
-                              _plantDetail?.sensorData?.recordedAt != null
-                                  ? DateFormat(
-                                    'MM월 dd일 HH:mm 업데이트',
-                                  ).format(_plantDetail!.sensorData!.recordedAt)
-                                  : "정보 없음",
-                              style: TextStyle(
-                                fontSize: 8,
-                                color: AppColors.primary,
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  _plantDetail?.sensorData?.recordedAt != null
+                                      ? DateFormat('MM월 dd일 HH:mm 업데이트').format(
+                                        _plantDetail!.sensorData!.recordedAt,
+                                      )
+                                      : "정보 없음",
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                if (_plantDetail?.iotDevice != null) ...[
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        _plantDetail!.iotDevice!.status ==
+                                                'ACTIVE'
+                                            ? Icons.sensors
+                                            : Icons.sensors_off,
+                                        size: 10,
+                                        color: AppColors.primary,
+                                      ),
+                                      SizedBox(width: 3),
+                                      Text(
+                                        '${_plantDetail!.iotDevice!.model} (${_plantDetail!.iotDevice!.deviceSerial})',
+                                        style: TextStyle(
+                                          fontSize: 8,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
                             ),
                           ],
                         ),

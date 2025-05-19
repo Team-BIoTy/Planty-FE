@@ -1,4 +1,5 @@
 import 'package:planty/models/env_standard.dart';
+import 'package:planty/models/iot_device.dart';
 import 'package:planty/models/personality.dart';
 import 'package:planty/models/plant_info_detail.dart';
 import 'package:planty/models/sensor_data.dart';
@@ -14,6 +15,7 @@ class UserPlantDetailResponse {
   final EnvStandard envStandard;
   final UserPlantStatus? status;
   final SensorData? sensorData;
+  final IotDevice? iotDevice;
 
   UserPlantDetailResponse({
     required this.id,
@@ -25,6 +27,7 @@ class UserPlantDetailResponse {
     required this.envStandard,
     this.status,
     this.sensorData,
+    this.iotDevice,
   });
 
   factory UserPlantDetailResponse.fromJson(Map<String, dynamic> json) {
@@ -43,6 +46,10 @@ class UserPlantDetailResponse {
       sensorData:
           json['sensorData'] != null
               ? SensorData.fromJson(json['sensorData'])
+              : null,
+      iotDevice:
+          json['iotDevice'] != null
+              ? IotDevice.fromJson(json['iotDevice'])
               : null,
     );
   }

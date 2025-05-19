@@ -117,7 +117,7 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
 
                       return GestureDetector(
                         onTap:
-                            isDisabled
+                            isDisabled!
                                 ? null
                                 : () {
                                   setState(() {
