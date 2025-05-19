@@ -42,10 +42,13 @@ class Status {
 
   factory Status.fromJson(Map<String, dynamic> json) {
     return Status(
-      temperatureScore: json['temperatureScore'] ?? 0,
-      lightScore: json['lightScore'] ?? 0,
-      humidityScore: json['humidityScore'] ?? 0,
-      message: (json['message'] ?? '-').replaceAll(r'\\n', '\n'),
+      temperatureScore: json['temperatureScore'] ?? 3,
+      lightScore: json['lightScore'] ?? 3,
+      humidityScore: json['humidityScore'] ?? 3,
+      message: (json['message'] ?? 'IoT 기기 연결 상태를 확인해 주세요 🔧').replaceAll(
+        r'\\n',
+        '\n',
+      ),
     );
   }
 }

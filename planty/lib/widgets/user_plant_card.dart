@@ -101,21 +101,21 @@ class UserPlantCard extends StatelessWidget {
                             children: [
                               PlantStatusBtn(
                                 icon: Icons.thermostat_rounded,
-                                score: status?.temperatureScore ?? 0,
+                                score: status!.temperatureScore,
                                 commandType: 'FAN',
                                 userPlantId: plant.userPlantId,
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.wb_sunny_rounded,
-                                score: status?.lightScore ?? 0,
+                                score: status.lightScore,
                                 commandType: 'LIGHT',
                                 userPlantId: plant.userPlantId,
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.water_drop_rounded,
-                                score: status?.humidityScore ?? 0,
+                                score: status.humidityScore,
                                 commandType: 'WATER',
                                 userPlantId: plant.userPlantId,
                               ),
@@ -138,7 +138,7 @@ class UserPlantCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     child: Text(
-                      status?.message ?? '-',
+                      status.message ?? '-',
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.center,
                     ),
