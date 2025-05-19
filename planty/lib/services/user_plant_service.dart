@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
+import 'package:planty/models/user_plant_edit_model.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -98,6 +99,67 @@ class UserPlantService {
 
     if (response.statusCode != 200) {
       throw Exception('IoT 기기 등록 실패');
+    }
+  }
+
+  // 수정용 반려식물 정보 조회
+  Future<UserPlantEditModel> fetchUserPlantForEdit(int userPlantId) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/user-plants/edit/$userPlantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return UserPlantEditModel.fromJson(data);
+    } else {
+      throw Exception('수정용 반려식물 정보 조회 실패');
+    }
+  }
+
+  // 반려식물 정보 수정
+  Future<void> editUserPlant(
+    int userPlantId,
+    UserPlantEditModel requestDto,
+  ) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.put(
+      Uri.parse('$_baseUrl/user-plants/edit/$userPlantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestDto.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('반려식물 정보 수정 실패');
+    }
+  }
+
+  // 반려식물 삭제
+  Future<void> deleteUserPlant(int userPlantId) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/user-plants/$userPlantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('반려식물 삭제 실패');
     }
   }
 }

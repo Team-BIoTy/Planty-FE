@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
+import 'package:planty/screens/chat/chat_screen.dart';
+import 'package:planty/screens/home/edit_user_plant_screen.dart';
+import 'package:planty/services/chat_service.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/detail_info_section.dart';
@@ -62,6 +65,105 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
           leadingType: AppBarLeadingType.back,
           titleText: "상세 리포트",
           trailingType: AppBarTrailingType.menu,
+          customTrailingWidget: PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert_rounded, color: AppColors.primary),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 2,
+            onSelected: (value) async {
+              if (value == 'edit') {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => EditPlantScreen(userPlantId: widget.userPlantId),
+                  ),
+                );
+                if (result == true) {
+                  await _fetchDeatil();
+                }
+              } else if (value == 'delete') {
+                final rootContext = context;
+                showDialog(
+                  context: rootContext,
+                  builder: (_) {
+                    return AlertDialog(
+                      title: Text("삭제 확인", style: TextStyle(fontSize: 20)),
+                      content: const Text(
+                        "정말 삭제하시겠습니까?\n실시간 환경 기록과 채팅 내용이 모두 삭제됩니다.",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      backgroundColor: Colors.white,
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(rootContext).pop(),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            textStyle: TextStyle(fontSize: 14),
+                          ),
+                          child: Text("취소"),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            textStyle: TextStyle(fontSize: 14),
+                          ),
+                          onPressed: () async {
+                            Navigator.of(rootContext).pop();
+                            await Future.delayed(Duration(milliseconds: 100));
+
+                            try {
+                              await UserPlantService().deleteUserPlant(
+                                widget.userPlantId,
+                              );
+                              if (!mounted) return;
+                              Navigator.of(rootContext).pop(true);
+                            } catch (e) {
+                              print("삭제 실패: $e");
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(rootContext).showSnackBar(
+                                const SnackBar(content: Text('삭제에 실패했습니다.')),
+                              );
+                            }
+                          },
+                          child: Text("삭제"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            itemBuilder:
+                (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Center(
+                      child: Text(
+                        '수정하기',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Center(
+                      child: Text(
+                        '삭제하기',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+          ),
         ),
       ),
       body:
@@ -131,6 +233,9 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                                 // 닉네임
                                 Text(
                                   _plantDetail!.nickname,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 20,
@@ -165,7 +270,7 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
 
                                 // 날짜
                                 Text(
-                                  '함께 한 지 ${DateTime.now().difference(_plantDetail!.adoptedAt).inDays}일째',
+                                  '함께 한 지 ${DateTime.now().difference(_plantDetail!.adoptedAt).inDays + 1}일째',
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 14,
@@ -176,11 +281,30 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
 
                                 // 챗봇 버튼
                                 PrimaryButton(
-                                  onPressed: () => {},
-                                  label: "테리와 대화하기",
+                                  onPressed: () async {
+                                    try {
+                                      final chatRoomId = await ChatService()
+                                          .startChat(
+                                            userPlantId: widget.userPlantId,
+                                          );
+                                      if (!context.mounted) return;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => ChatScreen(
+                                                chatRoomId: chatRoomId,
+                                              ),
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      print('채팅 시작 실패: $e');
+                                    }
+                                  },
+                                  label: '대화하기',
                                   width: 110,
                                   height: 33,
-                                  fontSize: 11,
+                                  fontSize: 13,
                                 ),
                               ],
                             ),
@@ -206,16 +330,44 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                                 color: AppColors.primary,
                               ),
                             ),
-                            Text(
-                              _plantDetail?.sensorData?.recordedAt != null
-                                  ? DateFormat(
-                                    'MM월 dd일 HH:mm 업데이트',
-                                  ).format(_plantDetail!.sensorData!.recordedAt)
-                                  : "정보 없음",
-                              style: TextStyle(
-                                fontSize: 8,
-                                color: AppColors.primary,
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  _plantDetail?.sensorData?.recordedAt != null
+                                      ? DateFormat('MM월 dd일 HH:mm 업데이트').format(
+                                        _plantDetail!.sensorData!.recordedAt,
+                                      )
+                                      : "정보 없음",
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                if (_plantDetail?.iotDevice != null) ...[
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        _plantDetail!.iotDevice!.status ==
+                                                'ACTIVE'
+                                            ? Icons.sensors
+                                            : Icons.sensors_off,
+                                        size: 10,
+                                        color: AppColors.primary,
+                                      ),
+                                      SizedBox(width: 3),
+                                      Text(
+                                        '${_plantDetail!.iotDevice!.model} (${_plantDetail!.iotDevice!.deviceSerial})',
+                                        style: TextStyle(
+                                          fontSize: 8,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
                             ),
                           ],
                         ),

@@ -3,12 +3,14 @@ class IotDevice {
   final String deviceSerial;
   final String model;
   final String status;
+  final bool? connected;
 
   IotDevice({
     required this.id,
     required this.deviceSerial,
     required this.model,
     required this.status,
+    this.connected,
   });
 
   factory IotDevice.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class IotDevice {
       deviceSerial: json['deviceSerial'],
       model: json['model'],
       status: json['status'],
+      connected: json['connected'],
     );
   }
 }

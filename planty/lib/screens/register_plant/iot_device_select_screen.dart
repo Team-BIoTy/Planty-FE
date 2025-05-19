@@ -6,7 +6,6 @@ import 'package:planty/screens/register_plant/register_complete_screen.dart';
 import 'package:planty/services/iot_device_service.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
-import 'package:planty/widgets/primary_button.dart';
 import 'package:planty/widgets/register_bottom_bar.dart';
 
 class IoTDeviceSelectScreen extends StatefulWidget {
@@ -41,6 +40,42 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
     }
   }
 
+  // 식물 등록
+  Future<void> _registerPlantAndMaybeConnectIoT({
+    bool connectIot = true,
+  }) async {
+    try {
+      final userPlantId = await UserPlantService().registerUserPlant(
+        widget.data.plantId,
+        widget.data.nickname,
+        widget.data.adoptedDate,
+        widget.data.personalityId,
+        widget.data.imageUrl,
+      );
+
+      if (connectIot && _selectedDeviceId != null) {
+        await UserPlantService().registerIotDevice(
+          userPlantId,
+          _selectedDeviceId!,
+        );
+      }
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => RegisterCompleteScreen(nickname: widget.data.nickname),
+        ),
+      );
+    } catch (e) {
+      print('등록 실패: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('등록 중 오류가 발생했습니다')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,18 +93,6 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PrimaryButton(
-                onPressed: () {},
-                label: 'IoT 신규 등록',
-                height: 35,
-                fontSize: 12,
-              ),
-              Divider(
-                height: 16,
-                color: AppColors.primary.withOpacity(0.5),
-                thickness: 0.5,
-              ),
-              const SizedBox(height: 16),
               Text(
                 '연결할 IoT 디바이스 선택',
                 style: TextStyle(
@@ -90,55 +113,78 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
                     itemBuilder: (context, index) {
                       final device = _iotDevices[index];
                       final isSelected = device.id == _selectedDeviceId;
+                      final isDisabled = device.connected;
 
                       return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedDeviceId = isSelected ? null : device.id;
-                          });
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: isSelected ? AppColors.light : Colors.white,
-                            border: Border.all(
+                        onTap:
+                            isDisabled!
+                                ? null
+                                : () {
+                                  setState(() {
+                                    _selectedDeviceId =
+                                        isSelected ? null : device.id;
+                                  });
+                                },
+                        child: Opacity(
+                          opacity: isDisabled ? 0.5 : 1.0,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
                               color:
-                                  isSelected
-                                      ? AppColors.primary
-                                      : AppColors.grey3,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '모델: ${device.model}',
-                                    style: const TextStyle(fontSize: 13),
-                                  ),
-                                  Text(
-                                    '일련번호: ${device.deviceSerial}',
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Icon(
-                                isSelected
-                                    ? Icons.check_circle
-                                    : Icons.radio_button_unchecked,
+                                  isSelected ? AppColors.light : Colors.white,
+                              border: Border.all(
                                 color:
                                     isSelected
                                         ? AppColors.primary
-                                        : Colors.grey,
+                                        : AppColors.grey3,
                               ),
-                            ],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '모델: ${device.model}',
+                                      style: const TextStyle(fontSize: 13),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '일련번호: ${device.deviceSerial}',
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        if (isDisabled)
+                                          const Text(
+                                            '이미 연결된 디바이스입니다',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                if (!isDisabled)
+                                  Icon(
+                                    isSelected
+                                        ? Icons.check_circle
+                                        : Icons.radio_button_unchecked,
+                                    color:
+                                        isSelected
+                                            ? AppColors.primary
+                                            : Colors.grey,
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -149,46 +195,19 @@ class _IoTDeviceSelectScreenState extends State<IoTDeviceSelectScreen> {
         ),
       ),
       bottomNavigationBar: RegisterBottomBar(
-        onPressed: () async {
+        onPressed: () {
           if (_selectedDeviceId == null) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text('IoT 디바이스를 선택해주세요')));
             return;
           }
-
-          try {
-            // 1. 반려식물 등록
-            final userPlantId = await UserPlantService().registerUserPlant(
-              widget.data.plantId,
-              widget.data.nickname,
-              widget.data.adoptedDate,
-              widget.data.personalityId,
-              widget.data.imageUrl,
-            );
-
-            // 2. IoT 기기 연결
-            await UserPlantService().registerIotDevice(
-              userPlantId,
-              _selectedDeviceId!,
-            );
-
-            // 3. 완료 화면 이동 또는 오류 알림
-            if (!mounted) return;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (_) =>
-                        RegisterCompleteScreen(nickname: widget.data.nickname),
-              ),
-            );
-          } catch (e) {
-            print('등록 실패: $e');
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('등록 중 오류가 발생했습니다')));
-          }
+          _registerPlantAndMaybeConnectIoT(); // connectIot = true by default
+        },
+        showSecondaryButton: true,
+        secondaryLabel: '건너뛰기',
+        secondaryOnPressed: () {
+          _registerPlantAndMaybeConnectIoT(connectIot: false);
         },
       ),
     );

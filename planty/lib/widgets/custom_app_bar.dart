@@ -9,12 +9,14 @@ class CustomAppBar extends StatelessWidget {
   final AppBarLeadingType leadingType;
   final String? titleText;
   final AppBarTrailingType trailingType;
+  final Widget? customTrailingWidget;
 
   const CustomAppBar({
     super.key,
     this.leadingType = AppBarLeadingType.logo,
     this.titleText,
     this.trailingType = AppBarTrailingType.none,
+    this.customTrailingWidget,
   });
 
   @override
@@ -49,10 +51,9 @@ class CustomAppBar extends StatelessWidget {
         );
         break;
       case AppBarTrailingType.menu:
-        trailingWidget = Icon(
-          Icons.more_vert_rounded,
-          color: AppColors.primary,
-        );
+        trailingWidget =
+            customTrailingWidget ??
+            Icon(Icons.more_vert_rounded, color: AppColors.primary);
         break;
       case AppBarTrailingType.none:
         trailingWidget = const SizedBox();
