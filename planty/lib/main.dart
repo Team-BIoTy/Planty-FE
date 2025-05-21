@@ -14,10 +14,7 @@ final RouteObserver<ModalRoute<void>> routeObserver =
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized;
   await dotenv.load();
-
   await Firebase.initializeApp();
-  final token = await FirebaseMessaging.instance.getToken();
-  print('🔥 FCM Token: $token');
 
   runApp(const MyApp());
 }
