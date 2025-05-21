@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planty/models/plant_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:planty/models/plant_info_detail.dart';
 
 class PlantInfoService {
-  final String _baseUrl = 'http://localhost:8080';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
 
   Future<List<PlantInfo>> fetchPlantLists() async {
     final response = await http.get(Uri.parse('$_baseUrl/plants'));

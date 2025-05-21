@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
 import 'package:planty/models/user_plant_edit_model.dart';
@@ -8,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 class UserPlantService {
   final _storage = FlutterSecureStorage();
-  final _baseUrl = 'http://localhost:8080';
+  final _baseUrl = dotenv.env['BASE_URL']!;
 
   // 사용자의 반려 식물 목록 불러오기 - 홈화면
   Future<List<UserPlantSummaryResponse>> fetchUserPlants() async {

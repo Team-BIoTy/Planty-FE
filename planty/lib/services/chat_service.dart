@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/models/chat_message.dart';
 import 'package:planty/models/chat_room.dart';
@@ -8,7 +9,7 @@ import 'package:planty/models/chat_room_detail.dart';
 
 class ChatService {
   final _storage = FlutterSecureStorage();
-  final String _baseUrl = 'http://localhost:8080';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
 
   Future<List<ChatRoom>> fetchChatRooms() async {
     final token = await _storage.read(key: 'token');

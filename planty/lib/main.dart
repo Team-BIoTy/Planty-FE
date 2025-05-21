@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planty/screens/chat/chat_list_screen.dart';
 import 'package:planty/screens/home/home_screen.dart';
 import 'package:planty/screens/my/my_screen.dart';
@@ -8,7 +9,10 @@ import 'package:planty/screens/onboarding/splash_screen.dart';
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized;
+  await dotenv.load();
+
   runApp(const MyApp());
 }
 
