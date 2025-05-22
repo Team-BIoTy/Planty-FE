@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:planty/models/iot_device.dart';
 import 'package:http/http.dart' as http;
 
 class IotDeviceService {
   final _storage = FlutterSecureStorage();
-  final String _baseUrl = 'http://localhost:8080';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
 
   // IoT 기기 목록 불러오기
   Future<List<IotDevice>> fetchUserIotDevices() async {

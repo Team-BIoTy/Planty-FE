@@ -138,7 +138,7 @@ class UserPlantCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     child: Text(
-                      status.message ?? '-',
+                      status.message,
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.center,
                     ),

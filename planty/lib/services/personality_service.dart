@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planty/models/personality.dart';
 import 'package:http/http.dart' as http;
 
 class PersonalityService {
-  final String _baseUrl = 'http://localhost:8080';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
 
   Future<List<Personality>> fetchPersonalities() async {
     final response = await http.get(Uri.parse('$_baseUrl/personalities'));

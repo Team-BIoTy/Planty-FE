@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:planty/services/fcm_service.dart';
 
 class AuthService {
-  final String _baseUrl = 'http://localhost:8080';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
+  final fcmService = FcmService();
 
   Future<String> login(String email, String password) async {
     final response = await http.post(
@@ -13,7 +16,10 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      return json['token'];
+      final jwtToken = json['token'];
+
+      await fcmService.sendDeviceTokenToServer(jwtToken);
+      return jwtToken;
     } else {
       throw Exception('로그인 실패: ${response.statusCode}');
     }
