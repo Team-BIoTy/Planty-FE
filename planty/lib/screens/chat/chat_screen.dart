@@ -20,6 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
+  bool _isBotTyping = false;
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       _chatRoomDetail?.messages.add(userMessage);
       _controller.clear();
+      _isBotTyping = true;
     });
     _scrollToBottom();
 
@@ -68,6 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       setState(() {
         _chatRoomDetail?.messages.add(response);
+        _isBotTyping = false;
       });
       _scrollToBottom();
     } catch (e) {
@@ -119,8 +122,18 @@ class _ChatScreenState extends State<ChatScreen> {
                         : ListView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.all(16),
-                          itemCount: messages.length,
+                          itemCount: messages.length + (_isBotTyping ? 1 : 0),
                           itemBuilder: (context, index) {
+                            if (_isBotTyping && index == messages.length) {
+                              return ChatBubble(
+                                message: ChatMessage(
+                                  sender: 'BOT',
+                                  message: '...',
+                                  timestamp: DateTime.now(),
+                                ),
+                                imageUrl: _chatRoomDetail?.imageUrl,
+                              );
+                            }
                             final message = messages[index];
                             return ChatBubble(
                               message: message,
