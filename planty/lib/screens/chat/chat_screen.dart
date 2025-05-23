@@ -60,8 +60,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       final response = await ChatService().sendMessage(
-        widget.chatRoomId,
-        content,
+        chatRoomId: widget.chatRoomId,
+        message: content,
+        sensorLogId: _chatRoomDetail!.sensorLogId!,
+        plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
+        persona: _chatRoomDetail!.personalityLabel!,
       );
       setState(() {
         _chatRoomDetail?.messages.add(response);

@@ -7,6 +7,8 @@ class ChatRoomDetail {
   final String? personalityLabel;
   final String? personalityEmoji;
   final String? personalityColor;
+  final int? sensorLogId;
+  final int? plantEnvStandardsId;
   final List<ChatMessage> messages;
 
   ChatRoomDetail({
@@ -16,6 +18,8 @@ class ChatRoomDetail {
     required this.personalityLabel,
     required this.personalityEmoji,
     required this.personalityColor,
+    this.sensorLogId,
+    this.plantEnvStandardsId,
     required this.messages,
   });
 
@@ -27,6 +31,8 @@ class ChatRoomDetail {
       personalityLabel: json['personalityLabel'],
       personalityEmoji: json['personalityEmoji'],
       personalityColor: json['personalityColor'],
+      sensorLogId: json['sensorLogId'],
+      plantEnvStandardsId: json['plantEnvStandardsId'],
       messages:
           (json['messages'] as List)
               .map((e) => ChatMessage.fromJson(e))
