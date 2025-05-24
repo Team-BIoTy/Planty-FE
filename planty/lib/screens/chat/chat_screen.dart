@@ -3,6 +3,7 @@ import 'package:planty/constants/colors.dart';
 import 'package:planty/models/chat_message.dart';
 import 'package:planty/models/chat_room_detail.dart';
 import 'package:planty/services/chat_service.dart';
+import 'package:planty/services/iot_device_service.dart';
 import 'package:planty/widgets/chat_bubble.dart';
 import 'package:planty/widgets/chat_input_field.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
@@ -20,6 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
+  bool _isBotTyping = false;
 
   @override
   void initState() {
@@ -29,9 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _fetchChatRoomDetail() async {
     try {
-      final detail = await ChatService().fetchChatRoomDetail(
-        widget.chatRoomId,
-      ); // 새로 만든 API
+      final detail = await ChatService().fetchChatRoomDetail(widget.chatRoomId);
       setState(() {
         _chatRoomDetail = detail;
         _isLoading = false;
@@ -55,16 +55,21 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       _chatRoomDetail?.messages.add(userMessage);
       _controller.clear();
+      _isBotTyping = true;
     });
     _scrollToBottom();
 
     try {
       final response = await ChatService().sendMessage(
-        widget.chatRoomId,
-        content,
+        chatRoomId: widget.chatRoomId,
+        message: content,
+        sensorLogId: _chatRoomDetail!.sensorLogId!,
+        plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
+        persona: _chatRoomDetail!.personalityLabel!,
       );
       setState(() {
         _chatRoomDetail?.messages.add(response);
+        _isBotTyping = false;
       });
       _scrollToBottom();
     } catch (e) {
@@ -87,6 +92,34 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       }
     });
+  }
+
+  Future<void> _refreshSensorData() async {
+    setState(() => _isLoading = true);
+    try {
+      // 1. Adafruit에 센서 갱신 명령 전송
+      await IotDeviceService().sendCommandToDevice(
+        userPlantId: _chatRoomDetail!.userPlantId,
+        type: "REFRESH",
+      );
+
+      // 2. 약간의 딜레이 (센서가 실제로 데이터를 갱신할 시간)
+      await Future.delayed(Duration(seconds: 3));
+
+      // 3. 최신 센서값 포함한 채팅방 정보 다시 불러오기
+      await _fetchChatRoomDetail();
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('센서 데이터 갱신 요청을 보냈어요!')));
+    } catch (e) {
+      print('센서 데이터 갱신 실패: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('센서 데이터 갱신에 실패했어요.')));
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -116,8 +149,18 @@ class _ChatScreenState extends State<ChatScreen> {
                         : ListView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.all(16),
-                          itemCount: messages.length,
+                          itemCount: messages.length + (_isBotTyping ? 1 : 0),
                           itemBuilder: (context, index) {
+                            if (_isBotTyping && index == messages.length) {
+                              return ChatBubble(
+                                message: ChatMessage(
+                                  sender: 'BOT',
+                                  message: '...',
+                                  timestamp: DateTime.now(),
+                                ),
+                                imageUrl: _chatRoomDetail?.imageUrl,
+                              );
+                            }
                             final message = messages[index];
                             return ChatBubble(
                               message: message,
@@ -134,6 +177,25 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+      floatingActionButton: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 155, left: 38),
+          child: ElevatedButton.icon(
+            onPressed: _refreshSensorData,
+            icon: Icon(Icons.refresh),
+            label: Text('최신 센서 데이터 불러오기'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: AppColors.primary,
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
           ),
         ),
       ),

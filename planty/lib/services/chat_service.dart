@@ -72,7 +72,13 @@ class ChatService {
   }
 
   // 채팅 전송
-  Future<ChatMessage> sendMessage(int chatRoomId, String message) async {
+  Future<ChatMessage> sendMessage({
+    required int chatRoomId,
+    required String message,
+    required int sensorLogId,
+    required int plantEnvStandardsId,
+    required String persona,
+  }) async {
     final token = await _storage.read(key: 'token');
     final response = await http.post(
       Uri.parse('$_baseUrl/chats/$chatRoomId/messages'),
@@ -80,7 +86,12 @@ class ChatService {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'message': message}),
+      body: jsonEncode({
+        'message': message,
+        'sensorLogId': sensorLogId,
+        'plantEnvStandardsId': plantEnvStandardsId,
+        'persona': persona,
+      }),
     );
 
     if (response.statusCode == 200) {
