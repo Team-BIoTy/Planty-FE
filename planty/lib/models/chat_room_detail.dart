@@ -2,6 +2,7 @@ import 'package:planty/models/chat_message.dart';
 
 class ChatRoomDetail {
   final int chatRoomId;
+  final int userPlantId;
   final String? userPlantNickname;
   final String? imageUrl;
   final String? personalityLabel;
@@ -13,6 +14,7 @@ class ChatRoomDetail {
 
   ChatRoomDetail({
     required this.chatRoomId,
+    required this.userPlantId,
     required this.userPlantNickname,
     required this.imageUrl,
     required this.personalityLabel,
@@ -26,6 +28,7 @@ class ChatRoomDetail {
   factory ChatRoomDetail.fromJson(Map<String, dynamic> json) {
     return ChatRoomDetail(
       chatRoomId: json['chatRoomId'],
+      userPlantId: json['userPlantId'],
       userPlantNickname: json['userPlantNickname'],
       imageUrl: json['imageUrl'] ?? '',
       personalityLabel: json['personalityLabel'],
