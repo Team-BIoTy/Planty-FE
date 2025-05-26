@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/chat_message.dart';
+import 'package:planty/widgets/typing_indicator.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
@@ -44,13 +45,16 @@ class ChatBubble extends StatelessWidget {
                   color: isUser ? Colors.white : AppColors.primary,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  message.message,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isUser ? Colors.black87 : Colors.white,
-                  ),
-                ),
+                child:
+                    message.message == '...'
+                        ? const TypingIndicator()
+                        : Text(
+                          message.message,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: isUser ? Colors.black87 : Colors.white,
+                          ),
+                        ),
               ),
             ),
           ],
