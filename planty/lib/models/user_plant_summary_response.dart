@@ -32,12 +32,14 @@ class Status {
   final int lightScore;
   final int humidityScore;
   final String message;
+  final DateTime checkedAt;
 
   Status({
     required this.temperatureScore,
     required this.lightScore,
     required this.humidityScore,
     required this.message,
+    required this.checkedAt,
   });
 
   factory Status.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class Status {
         r'\\n',
         '\n',
       ),
+      checkedAt: DateTime.parse(json['checkedAt']),
     );
   }
 }

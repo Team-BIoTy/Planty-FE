@@ -13,6 +13,15 @@ class UserPlantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = plant.status;
 
+    String formatCheckedAt(DateTime dt) {
+      final now = DateTime.now();
+      final diff = now.difference(dt);
+      if (diff.inMinutes < 1) return '방금 전';
+      if (diff.inMinutes < 60) return '${diff.inMinutes}분 전';
+      if (diff.inHours < 24) return '${diff.inHours}시간 전';
+      return '${dt.month}/${dt.day} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -141,6 +150,20 @@ class UserPlantCard extends StatelessWidget {
                       status.message,
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 5),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '🌱 최근 상태 확인: ${formatCheckedAt(status.checkedAt)}',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
