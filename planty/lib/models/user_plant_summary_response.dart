@@ -5,7 +5,7 @@ class UserPlantSummaryResponse {
   final DateTime adoptedAt;
   final Status? status;
   final Personality personality;
-  final Map<String, bool> runningCommands;
+  final Map<String, int?> runningCommands;
 
   UserPlantSummaryResponse({
     required this.userPlantId,
@@ -25,7 +25,7 @@ class UserPlantSummaryResponse {
       adoptedAt: DateTime.parse(json['adoptedAt']),
       status: json['status'] != null ? Status.fromJson(json['status']) : null,
       personality: Personality.fromJson(json['personality']),
-      runningCommands: Map<String, bool>.from(json['runningCommands'] ?? {}),
+      runningCommands: Map<String, int?>.from(json['runningCommands'] ?? {}),
     );
   }
 }

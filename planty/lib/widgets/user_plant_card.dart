@@ -113,8 +113,8 @@ class UserPlantCard extends StatelessWidget {
                                 score: status!.temperatureScore,
                                 commandType: 'FAN',
                                 userPlantId: plant.userPlantId,
-                                isRunning:
-                                    plant.runningCommands['FAN'] ?? false,
+                                runningCommandId:
+                                    plant.runningCommands['FAN']?.toInt(),
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
@@ -122,8 +122,8 @@ class UserPlantCard extends StatelessWidget {
                                 score: status.lightScore,
                                 commandType: 'LIGHT',
                                 userPlantId: plant.userPlantId,
-                                isRunning:
-                                    plant.runningCommands['LIGHT'] ?? false,
+                                runningCommandId:
+                                    plant.runningCommands['LIGHT']?.toInt(),
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
@@ -131,8 +131,8 @@ class UserPlantCard extends StatelessWidget {
                                 score: status.humidityScore,
                                 commandType: 'WATER',
                                 userPlantId: plant.userPlantId,
-                                isRunning:
-                                    plant.runningCommands['WATER'] ?? false,
+                                runningCommandId:
+                                    plant.runningCommands['WATER']?.toInt(),
                               ),
                             ],
                           ),

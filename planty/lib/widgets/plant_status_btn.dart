@@ -7,7 +7,7 @@ class PlantStatusBtn extends StatefulWidget {
   final int score; // 0~3
   final String commandType; // 'WATER', 'FAN', 'LIGHT'
   final int userPlantId;
-  final bool isRunning;
+  final int? runningCommandId;
 
   const PlantStatusBtn({
     super.key,
@@ -15,7 +15,7 @@ class PlantStatusBtn extends StatefulWidget {
     required this.score,
     required this.commandType,
     required this.userPlantId,
-    this.isRunning = false,
+    this.runningCommandId,
   });
 
   @override
@@ -34,7 +34,7 @@ class _PlantStatusBtnState extends State<PlantStatusBtn>
       duration: const Duration(seconds: 1),
     );
 
-    if (widget.isRunning) {
+    if (widget.runningCommandId != null) {
       _rotationController.repeat();
     }
   }
@@ -43,9 +43,10 @@ class _PlantStatusBtnState extends State<PlantStatusBtn>
   void didUpdateWidget(covariant PlantStatusBtn oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.isRunning && !_rotationController.isAnimating) {
+    if (widget.runningCommandId != null && !_rotationController.isAnimating) {
       _rotationController.repeat();
-    } else if (!widget.isRunning && _rotationController.isAnimating) {
+    } else if (widget.runningCommandId == null &&
+        _rotationController.isAnimating) {
       _rotationController.stop();
     }
   }
@@ -88,7 +89,7 @@ class _PlantStatusBtnState extends State<PlantStatusBtn>
             alignment: Alignment.center,
             children: [
               // 회전하는 테두리
-              if (widget.isRunning)
+              if (widget.runningCommandId != null)
                 RotationTransition(
                   turns: _rotationController,
                   child: Container(
