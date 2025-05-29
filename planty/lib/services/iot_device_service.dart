@@ -51,4 +51,21 @@ class IotDeviceService {
       throw Exception('명령 전송 실패: ${response.statusCode}');
     }
   }
+
+  Future<void> cancelCommand({required int commandId}) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.patch(
+      Uri.parse('$_baseUrl/iot/commands/$commandId/cancel'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('명령 취소 실패: ${response.body}');
+    }
+  }
 }

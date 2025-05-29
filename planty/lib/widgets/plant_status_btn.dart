@@ -57,6 +57,95 @@ class _PlantStatusBtnState extends State<PlantStatusBtn>
     super.dispose();
   }
 
+  Future<void> _handleTap() async {
+    // 실행 중이면 취소 여부 물어봄
+    if (widget.runningCommandId != null) {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder:
+            (_) => Theme(
+              data: Theme.of(context).copyWith(
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                  ),
+                ),
+                dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+              ),
+              child: AlertDialog(
+                title: Text(
+                  '${_getActionLabel(widget.commandType)} 중단하기',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                content: Text(
+                  '지금 ${_getActionLabel(widget.commandType)}를 멈출까요?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('계속 실행'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('중단하기'),
+                  ),
+                ],
+              ),
+            ),
+      );
+
+      if (confirm == true) {
+        try {
+          await IotDeviceService().cancelCommand(
+            commandId: widget.runningCommandId!,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${_getActionLabel(widget.commandType)}를 중단했어요.'),
+            ),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${_getActionLabel(widget.commandType)} 중단 실패: $e'),
+            ),
+          );
+        }
+      }
+    }
+    // 실행 중이 아니고 score == 0 → 새 명령 수행
+    else if (widget.score == 0) {
+      try {
+        await IotDeviceService().sendCommandToDevice(
+          userPlantId: widget.userPlantId,
+          type: widget.commandType,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${_getActionLabel(widget.commandType)} 시작!')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${_getActionLabel(widget.commandType)} 실패: $e'),
+          ),
+        );
+      }
+    }
+  }
+
+  String _getActionLabel(String commandType) {
+    switch (commandType) {
+      case 'WATER':
+        return '물 주기';
+      case 'FAN':
+        return '팬 켜기';
+      case 'LIGHT':
+        return '조명 켜기';
+      default:
+        return '작업';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isActive = (widget.score == 0);
@@ -64,25 +153,7 @@ class _PlantStatusBtnState extends State<PlantStatusBtn>
     final Color iconColor = isActive ? AppColors.primary : AppColors.grey2;
 
     return GestureDetector(
-      onTap:
-          isActive
-              ? () async {
-                try {
-                  await IotDeviceService().sendCommandToDevice(
-                    userPlantId: widget.userPlantId,
-                    type: widget.commandType,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${widget.commandType} 명령 전송 완료!')),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('명령 전송 실패: $e')));
-                }
-              }
-              : null,
-
+      onTap: _handleTap,
       child: Column(
         children: [
           Stack(
