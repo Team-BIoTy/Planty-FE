@@ -7,6 +7,7 @@ import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
 import 'package:planty/widgets/user_plant_card.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,11 +19,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<UserPlantSummaryResponse> _plants = [];
   bool _isLoading = true;
+  Timer? _pollingTimer;
 
   @override
   void initState() {
     super.initState();
     _fetchPlants();
+    _startPolling();
   }
 
   Future<void> _fetchPlants() async {
@@ -36,6 +39,19 @@ class _HomeScreenState extends State<HomeScreen> {
       print('에러 발생: $e');
       setState(() => _isLoading = false);
     }
+  }
+
+  void _startPolling() {
+    _pollingTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _fetchPlants(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel(); // memory leak 방지
+    super.dispose();
   }
 
   @override
