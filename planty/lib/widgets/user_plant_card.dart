@@ -111,22 +111,28 @@ class UserPlantCard extends StatelessWidget {
                               PlantStatusBtn(
                                 icon: Icons.thermostat_rounded,
                                 score: status!.temperatureScore,
-                                commandType: 'FAN_ON',
+                                commandType: 'FAN',
                                 userPlantId: plant.userPlantId,
+                                isRunning:
+                                    plant.runningCommands['FAN'] ?? false,
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.wb_sunny_rounded,
                                 score: status.lightScore,
-                                commandType: 'LIGHT_ON',
+                                commandType: 'LIGHT',
                                 userPlantId: plant.userPlantId,
+                                isRunning:
+                                    plant.runningCommands['LIGHT'] ?? false,
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.water_drop_rounded,
                                 score: status.humidityScore,
-                                commandType: 'WATER_ON',
+                                commandType: 'WATER',
                                 userPlantId: plant.userPlantId,
+                                isRunning:
+                                    plant.runningCommands['WATER'] ?? false,
                               ),
                             ],
                           ),

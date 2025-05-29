@@ -5,6 +5,7 @@ class UserPlantSummaryResponse {
   final DateTime adoptedAt;
   final Status? status;
   final Personality personality;
+  final Map<String, bool> runningCommands;
 
   UserPlantSummaryResponse({
     required this.userPlantId,
@@ -13,6 +14,7 @@ class UserPlantSummaryResponse {
     required this.adoptedAt,
     required this.status,
     required this.personality,
+    required this.runningCommands,
   });
 
   factory UserPlantSummaryResponse.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class UserPlantSummaryResponse {
       adoptedAt: DateTime.parse(json['adoptedAt']),
       status: json['status'] != null ? Status.fromJson(json['status']) : null,
       personality: Personality.fromJson(json['personality']),
+      runningCommands: Map<String, bool>.from(json['runningCommands'] ?? {}),
     );
   }
 }
