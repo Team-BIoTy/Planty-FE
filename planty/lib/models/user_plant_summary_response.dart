@@ -35,7 +35,7 @@ class Status {
   final int lightScore;
   final int humidityScore;
   final String message;
-  final DateTime checkedAt;
+  final DateTime? checkedAt;
 
   Status({
     required this.temperatureScore,
@@ -54,7 +54,8 @@ class Status {
         r'\\n',
         '\n',
       ),
-      checkedAt: DateTime.parse(json['checkedAt']),
+      checkedAt:
+          json['checkedAt'] != null ? DateTime.parse(json['checkedAt']) : null,
     );
   }
 }

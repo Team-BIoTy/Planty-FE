@@ -13,7 +13,8 @@ class UserPlantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = plant.status;
 
-    String formatCheckedAt(DateTime dt) {
+    String formatCheckedAt(DateTime? dt) {
+      if (dt == null) return '정보 없음';
       final now = DateTime.now();
       final diff = now.difference(dt);
       if (diff.inMinutes < 1) return '방금 전';
