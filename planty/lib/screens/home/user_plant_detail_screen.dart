@@ -400,18 +400,18 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                               label: '환경 조도',
                               value: formatValue(
                                 _plantDetail?.sensorData?.light,
-                                unit: 'Lux',
+                                unit: '',
                               ),
                               recommendedLabel: '권장 조도',
                               recommendedValue: formatRange(
                                 _plantDetail?.envStandard.light?.min,
                                 _plantDetail?.envStandard.light?.max,
-                                unit: 'Lux',
+                                unit: '',
                               ),
                               averageLabel: '평균 조도',
                               averageValue: formatValue(
                                 _plantDetail?.status?.lightScore,
-                                unit: 'Lux',
+                                unit: '',
                               ),
                             ),
                             EnvCard(
@@ -419,18 +419,18 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                               label: '흙 수분',
                               value: formatValue(
                                 _plantDetail?.sensorData?.humidity,
-                                unit: '%',
+                                unit: '',
                               ),
                               recommendedLabel: '권장 수분',
                               recommendedValue: formatRange(
                                 _plantDetail?.envStandard.humidity?.min,
                                 _plantDetail?.envStandard.humidity?.max,
-                                unit: '%',
+                                unit: '',
                               ),
                               averageLabel: '평균 수분',
                               averageValue: formatValue(
                                 _plantDetail?.status?.humidityScore,
-                                unit: '%',
+                                unit: '',
                               ),
                             ),
                           ],
