@@ -5,6 +5,7 @@ class UserPlantSummaryResponse {
   final DateTime adoptedAt;
   final Status? status;
   final Personality personality;
+  final Map<String, int?> runningCommands;
 
   UserPlantSummaryResponse({
     required this.userPlantId,
@@ -13,6 +14,7 @@ class UserPlantSummaryResponse {
     required this.adoptedAt,
     required this.status,
     required this.personality,
+    required this.runningCommands,
   });
 
   factory UserPlantSummaryResponse.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class UserPlantSummaryResponse {
       adoptedAt: DateTime.parse(json['adoptedAt']),
       status: json['status'] != null ? Status.fromJson(json['status']) : null,
       personality: Personality.fromJson(json['personality']),
+      runningCommands: Map<String, int?>.from(json['runningCommands'] ?? {}),
     );
   }
 }
@@ -32,12 +35,14 @@ class Status {
   final int lightScore;
   final int humidityScore;
   final String message;
+  final DateTime? checkedAt;
 
   Status({
     required this.temperatureScore,
     required this.lightScore,
     required this.humidityScore,
     required this.message,
+    required this.checkedAt,
   });
 
   factory Status.fromJson(Map<String, dynamic> json) {
@@ -49,6 +54,8 @@ class Status {
         r'\\n',
         '\n',
       ),
+      checkedAt:
+          json['checkedAt'] != null ? DateTime.parse(json['checkedAt']) : null,
     );
   }
 }

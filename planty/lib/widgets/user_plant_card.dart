@@ -13,6 +13,16 @@ class UserPlantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = plant.status;
 
+    String formatCheckedAt(DateTime? dt) {
+      if (dt == null) return '정보 없음';
+      final now = DateTime.now();
+      final diff = now.difference(dt);
+      if (diff.inMinutes < 1) return '방금 전';
+      if (diff.inMinutes < 60) return '${diff.inMinutes}분 전';
+      if (diff.inHours < 24) return '${diff.inHours}시간 전';
+      return '${dt.month}/${dt.day} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -102,22 +112,28 @@ class UserPlantCard extends StatelessWidget {
                               PlantStatusBtn(
                                 icon: Icons.thermostat_rounded,
                                 score: status!.temperatureScore,
-                                commandType: 'FAN_ON',
+                                commandType: 'FAN',
                                 userPlantId: plant.userPlantId,
+                                runningCommandId:
+                                    plant.runningCommands['FAN']?.toInt(),
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.wb_sunny_rounded,
                                 score: status.lightScore,
-                                commandType: 'LIGHT_ON',
+                                commandType: 'LIGHT',
                                 userPlantId: plant.userPlantId,
+                                runningCommandId:
+                                    plant.runningCommands['LIGHT']?.toInt(),
                               ),
                               SizedBox(width: 15),
                               PlantStatusBtn(
                                 icon: Icons.water_drop_rounded,
                                 score: status.humidityScore,
-                                commandType: 'WATER_ON',
+                                commandType: 'WATER',
                                 userPlantId: plant.userPlantId,
+                                runningCommandId:
+                                    plant.runningCommands['WATER']?.toInt(),
                               ),
                             ],
                           ),
@@ -141,6 +157,20 @@ class UserPlantCard extends StatelessWidget {
                       status.message,
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 5),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '🌱 최근 상태 확인: ${formatCheckedAt(status.checkedAt)}',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
