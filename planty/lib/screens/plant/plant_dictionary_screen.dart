@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/models/plant_info.dart';
+import 'package:planty/screens/plant/plant_dictionary_detail_screen.dart';
 import 'package:planty/services/plant_info_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
@@ -57,12 +58,15 @@ class _PlantDictionaryScreenState extends State<PlantDictionaryScreen> {
                       final plant = _plantsList[index];
                       return GestureDetector(
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => PlantDetailScreen(plantId: plant.id),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => PlantDictionaryDetailScreen(
+                                    plantId: plant.id!,
+                                  ),
+                            ),
+                          );
                         },
                         child: PlantInfoCard(
                           imageUrl: plant.imageUrl,
