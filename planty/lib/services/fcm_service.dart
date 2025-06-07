@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
 class FcmService {
@@ -28,5 +30,31 @@ class FcmService {
     } else {
       print("전송 실패: ${response.statusCode} ${response.body}");
     }
+  }
+
+  final FlutterLocalNotificationsPlugin _localPlugin =
+      FlutterLocalNotificationsPlugin();
+  Future<void> initLocalNotification() async {
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const settings = InitializationSettings(android: android);
+    await _localPlugin.initialize(settings);
+  }
+
+  Future<void> showNotification(RemoteNotification notification) async {
+    const androidDetails = AndroidNotificationDetails(
+      'planty_channel',
+      'Planty 알림',
+      importance: Importance.max,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+      color: Colors.white,
+    );
+    const notificationDetails = NotificationDetails(android: androidDetails);
+    await _localPlugin.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      notificationDetails,
+    );
   }
 }
