@@ -2,6 +2,9 @@
     package="com.example.planty"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
         android:label="planty"
         android:name="${applicationName}"
