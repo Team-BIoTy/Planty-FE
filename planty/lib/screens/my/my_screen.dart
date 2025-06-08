@@ -14,31 +14,57 @@ class MyScreen extends StatefulWidget {
 }
 
 class _MyScreenState extends State<MyScreen> {
-  final String userEmail = "test@test.com";
-  final DateTime joinedDate = DateTime(2025, 1, 15); // 예시 가입일
+  String? userEmail;
+  DateTime? joinedDate;
   final storage = FlutterSecureStorage();
   final authService = AuthService();
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final token = await storage.read(key: 'token');
+    if (token == null) return;
+
+    try {
+      final data = await authService.fetchMyInfo(token);
+      setState(() {
+        userEmail = data['email'];
+        joinedDate = DateTime.parse(data['joinedDate']);
+      });
+    } catch (e) {
+      print("유저 정보 로딩 실패: $e");
+    }
+  }
+
   int get daysTogether {
+    if (joinedDate == null) return 0;
     final now = DateTime.now();
-    return now.difference(joinedDate).inDays;
+    return now.difference(joinedDate!).inDays;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (userEmail == null || joinedDate == null) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(61),
         child: CustomAppBar(),
       ),
-
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 24),
-            // 프로필 정보
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -57,7 +83,7 @@ class _MyScreenState extends State<MyScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userEmail,
+                        userEmail!,
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -80,8 +106,6 @@ class _MyScreenState extends State<MyScreen> {
             ),
             const SizedBox(height: 24),
             const Divider(thickness: 0.5, color: Color(0xFFE5EDD5)),
-
-            // 메뉴 리스트
             Expanded(
               child: ListView(
                 children: [
@@ -95,7 +119,6 @@ class _MyScreenState extends State<MyScreen> {
           ],
         ),
       ),
-
       bottomNavigationBar: CustomBottomNavBar(currentIndex: 3, onTap: (_) {}),
     );
   }

@@ -82,4 +82,17 @@ class AuthService {
       throw Exception('회원 탈퇴 실패: $msg');
     }
   }
+
+  Future<Map<String, dynamic>> fetchMyInfo(String token) async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/auth/me'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('유저 정보 불러오기 실패');
+    }
+  }
 }
