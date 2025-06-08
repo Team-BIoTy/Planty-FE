@@ -47,4 +47,52 @@ class AuthService {
 
     return response.statusCode == 200;
   }
+
+  Future<void> changePassword({
+    required String token,
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/auth/change-password'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      final msg = utf8.decode(response.bodyBytes);
+      throw Exception('비밀번호 변경 실패: $msg');
+    }
+  }
+
+  Future<void> deleteAccount(String token) async {
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/auth/delete'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode != 200) {
+      final msg = utf8.decode(response.bodyBytes);
+      throw Exception('회원 탈퇴 실패: $msg');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchMyInfo(String token) async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/auth/me'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('유저 정보 불러오기 실패');
+    }
+  }
 }
