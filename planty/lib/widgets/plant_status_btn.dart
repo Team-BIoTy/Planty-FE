@@ -121,7 +121,11 @@ class _PlantStatusBtnState extends State<PlantStatusBtn>
           type: widget.commandType,
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${_getActionLabel(widget.commandType)} 시작!')),
+          SnackBar(
+            content: Text(
+              '${_getActionLabel(widget.commandType)} 시작! 상태 반영까지 잠시 걸릴 수 있어요.',
+            ),
+          ),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
