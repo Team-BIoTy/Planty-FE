@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
+import 'package:planty/screens/home/notification_screen.dart';
 import 'package:planty/screens/register_plant/plant_list_screen.dart';
 import 'package:planty/screens/home/user_plant_detail_screen.dart';
+import 'package:planty/services/notification_service.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
@@ -20,12 +22,14 @@ class _HomeScreenState extends State<HomeScreen> {
   List<UserPlantSummaryResponse> _plants = [];
   bool _isLoading = true;
   Timer? _pollingTimer;
+  bool _hasUnreadNotifications = false;
 
   @override
   void initState() {
     super.initState();
     _fetchPlants();
     _startPolling();
+    _checkUnreadNotifications();
   }
 
   Future<void> _fetchPlants() async {
@@ -38,6 +42,21 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print('에러 발생: $e');
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _checkUnreadNotifications() async {
+    try {
+      final notifications =
+          await NotificationService().fetchNotificationsFromJwt();
+      final hasUnread = notifications.any((noti) => !noti.isRead);
+      if (mounted) {
+        setState(() {
+          _hasUnreadNotifications = hasUnread;
+        });
+      }
+    } catch (e) {
+      print('알림 조회 중 오류 발생: $e');
     }
   }
 
@@ -61,7 +80,26 @@ class _HomeScreenState extends State<HomeScreen> {
       // 상단바
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(61),
-        child: CustomAppBar(trailingType: AppBarTrailingType.notification),
+        child: CustomAppBar(
+          trailingType: AppBarTrailingType.notification,
+          showUnreadDot: _hasUnreadNotifications,
+          onNotificationTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationScreen(),
+              ),
+            ).then((value) {
+              if (value == true) {
+                setState(() {
+                  _hasUnreadNotifications = false;
+                });
+              } else {
+                _checkUnreadNotifications();
+              }
+            });
+          },
+        ),
       ),
 
       // 바디

@@ -53,7 +53,7 @@ class _PlantDictionaryScreenState extends State<PlantDictionaryScreen> {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(61),
-        child: CustomAppBar(trailingType: AppBarTrailingType.notification),
+        child: CustomAppBar(),
       ),
       body: SafeArea(
         child:

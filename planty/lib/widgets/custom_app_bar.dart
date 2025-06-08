@@ -10,6 +10,9 @@ class CustomAppBar extends StatelessWidget {
   final String? titleText;
   final AppBarTrailingType trailingType;
   final Widget? customTrailingWidget;
+  final bool showUnreadDot;
+  final VoidCallback? onNotificationTap;
+  final VoidCallback? onBackTap;
 
   const CustomAppBar({
     super.key,
@@ -17,6 +20,9 @@ class CustomAppBar extends StatelessWidget {
     this.titleText,
     this.trailingType = AppBarTrailingType.none,
     this.customTrailingWidget,
+    this.showUnreadDot = false,
+    this.onNotificationTap,
+    this.onBackTap,
   });
 
   @override
@@ -32,7 +38,7 @@ class CustomAppBar extends StatelessWidget {
         break;
       case AppBarLeadingType.back:
         leadingWidget = IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: onBackTap ?? () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primary),
         );
         break;
@@ -45,11 +51,32 @@ class CustomAppBar extends StatelessWidget {
     Widget trailingWidget;
     switch (trailingType) {
       case AppBarTrailingType.notification:
-        trailingWidget = Icon(
-          Icons.notifications_outlined,
-          color: AppColors.primary,
+        trailingWidget = Stack(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.notifications_outlined,
+                color: AppColors.primary,
+              ),
+              onPressed: onNotificationTap,
+            ),
+            if (showUnreadDot)
+              Positioned(
+                right: 6,
+                top: 6,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
         );
         break;
+
       case AppBarTrailingType.menu:
         trailingWidget =
             customTrailingWidget ??
