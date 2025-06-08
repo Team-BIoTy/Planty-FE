@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
 import 'package:planty/widgets/custom_bottom_nav_bar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:planty/screens/onboarding/login_screen.dart';
 
 class MyScreen extends StatefulWidget {
   const MyScreen({super.key});
@@ -26,7 +28,7 @@ class _MyScreenState extends State<MyScreen> {
 
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(61),
-        child: CustomAppBar(trailingType: AppBarTrailingType.notification),
+        child: CustomAppBar(),
       ),
 
       body: SafeArea(
@@ -83,6 +85,18 @@ class _MyScreenState extends State<MyScreen> {
                   _buildMenuItem("비밀번호 변경", onTap: () {}),
                   _buildMenuItem("알림 설정", onTap: () {}),
                   _buildMenuItem("IoT 기기 관리", onTap: () {}),
+                  _buildMenuItem(
+                    "로그아웃",
+                    onTap: () async {
+                      final storage = FlutterSecureStorage();
+                      await storage.delete(key: 'token');
+                      if (!mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
+                    },
+                  ),
                   _buildMenuItem("탈퇴하기", onTap: () {}),
                 ],
               ),
