@@ -110,7 +110,6 @@ class _MyScreenState extends State<MyScreen> {
               child: ListView(
                 children: [
                   _buildMenuItem("비밀번호 변경", onTap: _showChangePasswordDialog),
-                  _buildMenuItem("알림 설정", onTap: () {}),
                   _buildMenuItem("로그아웃", onTap: _logout),
                   _buildMenuItem("탈퇴하기", onTap: _confirmDeleteAccount),
                 ],
