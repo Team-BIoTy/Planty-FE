@@ -196,6 +196,52 @@ class PlantInfoDetail {
     };
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'imageUrl': imageUrl,
+      'commonName': commonName,
+      'scientificName': scientificName,
+      'englishName': englishName,
+      'tradeName': tradeName,
+      'familyName': familyName,
+      'origin': origin,
+      'careTip': careTip,
+      'category': category,
+      'growthForm': growthForm,
+      'growthHeight': growthHeight,
+      'growthWidth': growthWidth,
+      'indoorGardenUse': indoorGardenUse,
+      'ecologicalType': ecologicalType,
+      'leafShape': leafShape,
+      'leafPattern': leafPattern,
+      'leafColor': leafColor,
+      'floweringSeason': floweringSeason,
+      'flowerColor': flowerColor,
+      'fruitingSeason': fruitingSeason,
+      'fruitColor': fruitColor,
+      'fragrance': fragrance,
+      'propagationMethod': propagationMethod,
+      'propagationSeason': propagationSeason,
+      'careLevel': careLevel,
+      'careDifficulty': careDifficulty,
+      'lightRequirement': lightRequirement,
+      'placement': placement,
+      'growthRate': growthRate,
+      'optimalTemperature': optimalTemperature,
+      'minWinterTemperature': minWinterTemperature,
+      'humidity': humidity,
+      'fertilizer': fertilizer,
+      'soilType': soilType,
+      'wateringSpring': wateringSpring,
+      'wateringSummer': wateringSummer,
+      'wateringAutumn': wateringAutumn,
+      'wateringWinter': wateringWinter,
+      'pestsDiseases': pestsDiseases,
+      'functionalInfo': functionalInfo,
+    };
+  }
+
   // 기능성 정보
   Map<String, String?> toFunctionInfoMap() {
     return {'기능성 정보': functionalInfo};

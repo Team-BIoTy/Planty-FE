@@ -1,4 +1,5 @@
 import 'package:planty/models/chat_message.dart';
+import 'package:planty/models/plant_info_detail.dart';
 
 class ChatRoomDetail {
   final int chatRoomId;
@@ -11,6 +12,7 @@ class ChatRoomDetail {
   final int? sensorLogId;
   final int? plantEnvStandardsId;
   final List<ChatMessage> messages;
+  final PlantInfoDetail? plantInfoDetail;
 
   ChatRoomDetail({
     required this.chatRoomId,
@@ -23,6 +25,7 @@ class ChatRoomDetail {
     this.sensorLogId,
     this.plantEnvStandardsId,
     required this.messages,
+    this.plantInfoDetail,
   });
 
   factory ChatRoomDetail.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,10 @@ class ChatRoomDetail {
           (json['messages'] as List)
               .map((e) => ChatMessage.fromJson(e))
               .toList(),
+      plantInfoDetail:
+          json['plantInfo'] != null
+              ? PlantInfoDetail.fromJson(json['plantInfo'])
+              : null,
     );
   }
 }

@@ -78,6 +78,7 @@ class ChatService {
     required int sensorLogId,
     required int plantEnvStandardsId,
     required String persona,
+    required Map<String, dynamic>? plantInfo,
   }) async {
     final token = await _storage.read(key: 'token');
     final response = await http.post(
@@ -91,6 +92,7 @@ class ChatService {
         'sensorLogId': sensorLogId,
         'plantEnvStandardsId': plantEnvStandardsId,
         'persona': persona,
+        'plantInfo': plantInfo,
       }),
     );
 

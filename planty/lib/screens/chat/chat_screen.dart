@@ -66,6 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
         sensorLogId: _chatRoomDetail!.sensorLogId!,
         plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
         persona: _chatRoomDetail!.personalityLabel!,
+        plantInfo: _chatRoomDetail!.plantInfoDetail?.toJson(),
       );
       setState(() {
         _chatRoomDetail?.messages.add(response);
