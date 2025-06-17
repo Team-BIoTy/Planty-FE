@@ -20,8 +20,8 @@
 이 프로젝트는 Flutter 개발 환경과 Android 에뮬레이터 설정이 필요합니다.</br>
 사용자의 기기에 맞는 가이드를 따라 진행해주세요.
 
-- [macOS - Flutter 설치 가이드](https://docs.flutter.dev/get-started/install/macos/mobile-android) </br>
-- [Windos - Flutter 설치 가이드](https://docs.flutter.dev/get-started/install/windows/mobile)
+- [MacOS - Flutter 설치 가이드](https://docs.flutter.dev/get-started/install/macos/mobile-android) </br>
+- [Windows - Flutter 설치 가이드](https://docs.flutter.dev/get-started/install/windows/mobile)
 
 </br>
 
@@ -53,7 +53,7 @@ BASE_URL='http://10.0.2.2:8080'
 
 ### 2. Firebase 설정
 FCM 푸시 알림을 수신하기 위해 Firebase 설정 파일을 추가해야 합니다.
-[Firebase 콘솔](https://firebase.google.com/?gad_source=1&gad_campaignid=21689733760&gbraid=0AAAAADpUDOhBmSRjtlmKXtUM8B5WUipX4&gclid=CjwKCAjwgb_CBhBMEiwA0p3oOLRI6oi3fz2AVgzaGgQq5ELNv0EwXIF0a7svWkXjI8JpeZzbtHZO8RoCao4QAvD_BwE&gclsrc=aw.ds&hl=ko)에서 프로젝트를 생성하고 앱을 등록한 후 google-services.json 파일을 발급받아 아래 경로에 추가해주세요.
+[Firebase 콘솔](https://firebase.google.com/)에서 프로젝트를 생성하고 앱을 등록한 후 google-services.json 파일을 발급받아 아래 경로에 추가해주세요.
 
 - Android: `Planty-FE/planty/android/app/google-services.json`
 
@@ -78,6 +78,7 @@ Android 에뮬레이터 또는 실기기에서 앱을 실행할 수 있습니다
 ```
 flutter run
 ```
+> 실행 전 Android 에뮬레이터 또는 디바이스가 연결되어 있는지 확인해주세요.
 
 </br>
 
