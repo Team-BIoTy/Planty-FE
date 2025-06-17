@@ -17,8 +17,13 @@
 
 ## 📌 사전 준비 (Flutter 환경 세팅)
 
-이 프로젝트는 Flutter 개발 환경과 Android 에뮬레이터 설정이 필요합니다.</br>
-사용자의 기기에 맞는 가이드를 따라 진행해주세요.
+이 프로젝트는 아래 Flutter 환경에서 개발되었습니다.
+
+- Flutter: 3.29.2
+- Dart: 3.7.2
+- DevTools: 2.42.3
+
+아래 가이드를 참고해 Flutter 및 Android 에뮬레이터 환경을 먼저 설정해주세요.<br>
 
 - [MacOS - Flutter 설치 가이드](https://docs.flutter.dev/get-started/install/macos/mobile-android) </br>
 - [Windows - Flutter 설치 가이드](https://docs.flutter.dev/get-started/install/windows/mobile)
