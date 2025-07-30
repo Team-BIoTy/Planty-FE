@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:planty/models/environmentreport.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
 import 'package:planty/models/user_plant_edit_model.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
@@ -161,6 +162,31 @@ class UserPlantService {
 
     if (response.statusCode != 204) {
       throw Exception('반려식물 삭제 실패');
+    }
+  }
+
+  Future<EnvironmentReport> fetchEnvironmentReport(
+    int userPlantId,
+    String date,
+  ) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.get(
+      Uri.parse(
+        '$_baseUrl/user-plants/$userPlantId/environment-report?date=$date',
+      ),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return EnvironmentReport.fromJson(data);
+    } else {
+      throw Exception('환경 리포트 조회 실패');
     }
   }
 }
