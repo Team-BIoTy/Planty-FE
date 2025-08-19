@@ -4,6 +4,7 @@ import 'package:planty/constants/colors.dart';
 import 'package:planty/models/user_plant_detail_response.dart';
 import 'package:planty/screens/chat/chat_screen.dart';
 import 'package:planty/screens/home/edit_user_plant_screen.dart';
+import 'package:planty/screens/home/environment_report_screen.dart';
 import 'package:planty/services/chat_service.dart';
 import 'package:planty/services/user_plant_service.dart';
 import 'package:planty/widgets/custom_app_bar.dart';
@@ -315,128 +316,159 @@ class _UserPlantDetailScreenState extends State<UserPlantDetailScreen> {
                     SizedBox(height: 20),
 
                     // 2. 실시간 환경
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "실시간 환경",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  _plantDetail?.sensorData?.recordedAt != null
-                                      ? DateFormat('MM월 dd일 HH:mm 업데이트').format(
-                                        _plantDetail!.sensorData!.recordedAt,
-                                      )
-                                      : "정보 없음",
-                                  style: TextStyle(
-                                    fontSize: 8,
-                                    color: AppColors.primary,
-                                  ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (_, __, ___) => EnvironmentReportScreen(
+                                  userPlantId: widget.userPlantId,
                                 ),
-                                if (_plantDetail?.iotDevice != null) ...[
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        _plantDetail!.iotDevice!.status ==
-                                                'ACTIVE'
-                                            ? Icons.sensors
-                                            : Icons.sensors_off,
-                                        size: 10,
-                                        color: AppColors.primary,
-                                      ),
-                                      SizedBox(width: 3),
-                                      Text(
-                                        '${_plantDetail!.iotDevice!.model} (${_plantDetail!.iotDevice!.deviceSerial})',
-                                        style: TextStyle(
-                                          fontSize: 8,
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 13),
+                            transitionsBuilder: (_, animation, __, child) {
+                              const begin = Offset(1.0, 0.0); // 오른쪽에서
+                              const end = Offset.zero;
+                              const curve = Curves.ease;
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            EnvCard(
-                              icon: Icons.thermostat,
-                              label: '환경 온도',
-                              value: formatValue(
-                                _plantDetail?.sensorData?.temperature,
-                                unit: '°C',
+                              final tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "실시간 환경",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
                               ),
-                              recommendedLabel: '권장 온도',
-                              recommendedValue: formatRange(
-                                _plantDetail?.envStandard.temperature?.min,
-                                _plantDetail?.envStandard.temperature?.max,
-                                unit: '°C',
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    _plantDetail?.sensorData?.recordedAt != null
+                                        ? DateFormat(
+                                          'MM월 dd일 HH:mm 업데이트',
+                                        ).format(
+                                          _plantDetail!.sensorData!.recordedAt,
+                                        )
+                                        : "정보 없음",
+                                    style: TextStyle(
+                                      fontSize: 8,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                  if (_plantDetail?.iotDevice != null) ...[
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          _plantDetail!.iotDevice!.status ==
+                                                  'ACTIVE'
+                                              ? Icons.sensors
+                                              : Icons.sensors_off,
+                                          size: 10,
+                                          color: AppColors.primary,
+                                        ),
+                                        SizedBox(width: 3),
+                                        Text(
+                                          '${_plantDetail!.iotDevice!.model} (${_plantDetail!.iotDevice!.deviceSerial})',
+                                          style: TextStyle(
+                                            fontSize: 8,
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ],
                               ),
-                              averageLabel: '평균 온도',
-                              averageValue: formatValue(
-                                _plantDetail?.status?.temperatureScore,
-                                unit: '°C',
+                            ],
+                          ),
+                          const SizedBox(height: 13),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              EnvCard(
+                                icon: Icons.thermostat,
+                                label: '환경 온도',
+                                value: formatValue(
+                                  _plantDetail?.sensorData?.temperature,
+                                  unit: '°C',
+                                ),
+                                recommendedLabel: '권장 온도',
+                                recommendedValue: formatRange(
+                                  _plantDetail?.envStandard.temperature?.min,
+                                  _plantDetail?.envStandard.temperature?.max,
+                                  unit: '°C',
+                                ),
+                                averageLabel: '평균 온도',
+                                averageValue: formatValue(
+                                  _plantDetail?.status?.temperatureScore,
+                                  unit: '°C',
+                                ),
                               ),
-                            ),
-                            EnvCard(
-                              icon: Icons.wb_sunny_outlined,
-                              label: '환경 조도',
-                              value: formatValue(
-                                _plantDetail?.sensorData?.light,
-                                unit: 'Lux',
+                              EnvCard(
+                                icon: Icons.wb_sunny_outlined,
+                                label: '환경 조도',
+                                value: formatValue(
+                                  _plantDetail?.sensorData?.light,
+                                  unit: 'Lux',
+                                ),
+                                recommendedLabel: '권장 조도',
+                                recommendedValue: formatRange(
+                                  _plantDetail?.envStandard.light?.min,
+                                  _plantDetail?.envStandard.light?.max,
+                                  unit: 'Lux',
+                                ),
+                                averageLabel: '평균 조도',
+                                averageValue: formatValue(
+                                  _plantDetail?.status?.lightScore,
+                                  unit: 'Lux',
+                                ),
                               ),
-                              recommendedLabel: '권장 조도',
-                              recommendedValue: formatRange(
-                                _plantDetail?.envStandard.light?.min,
-                                _plantDetail?.envStandard.light?.max,
-                                unit: 'Lux',
+                              EnvCard(
+                                icon: Icons.water_drop,
+                                label: '흙 수분',
+                                value: formatValue(
+                                  _plantDetail?.sensorData?.humidity,
+                                  unit: '%',
+                                ),
+                                recommendedLabel: '권장 수분',
+                                recommendedValue: formatRange(
+                                  _plantDetail?.envStandard.humidity?.min,
+                                  _plantDetail?.envStandard.humidity?.max,
+                                  unit: '%',
+                                ),
+                                averageLabel: '평균 수분',
+                                averageValue: formatValue(
+                                  _plantDetail?.status?.humidityScore,
+                                  unit: '%',
+                                ),
                               ),
-                              averageLabel: '평균 조도',
-                              averageValue: formatValue(
-                                _plantDetail?.status?.lightScore,
-                                unit: 'Lux',
-                              ),
-                            ),
-                            EnvCard(
-                              icon: Icons.water_drop,
-                              label: '흙 수분',
-                              value: formatValue(
-                                _plantDetail?.sensorData?.humidity,
-                                unit: '%',
-                              ),
-                              recommendedLabel: '권장 수분',
-                              recommendedValue: formatRange(
-                                _plantDetail?.envStandard.humidity?.min,
-                                _plantDetail?.envStandard.humidity?.max,
-                                unit: '%',
-                              ),
-                              averageLabel: '평균 수분',
-                              averageValue: formatValue(
-                                _plantDetail?.status?.humidityScore,
-                                unit: '%',
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 13),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(height: 13),
+                        ],
+                      ),
                     ),
 
                     const SizedBox(height: 5),

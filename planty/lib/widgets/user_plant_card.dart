@@ -49,8 +49,8 @@ class UserPlantCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(100),
                           child: Image.network(
                             plant.imageUrl,
-                            width: 127,
-                            height: 127,
+                            width: 100,
+                            height: 100,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -59,8 +59,8 @@ class UserPlantCard extends StatelessWidget {
                           bottom: 0,
                           left: 0,
                           child: Container(
-                            width: 40,
-                            height: 40,
+                            width: 35,
+                            height: 35,
                             decoration: BoxDecoration(
                               color: _hexToColor(plant.personality.color),
                               shape: BoxShape.circle,
@@ -77,7 +77,7 @@ class UserPlantCard extends StatelessWidget {
                       ],
                     ),
 
-                    SizedBox(width: 15),
+                    SizedBox(width: 5),
 
                     // 닉네임, 날짜 + 상태 버튼
                     Expanded(
@@ -117,7 +117,7 @@ class UserPlantCard extends StatelessWidget {
                                 runningCommandId:
                                     plant.runningCommands['FAN']?.toInt(),
                               ),
-                              SizedBox(width: 15),
+                              SizedBox(width: 10),
                               PlantStatusBtn(
                                 icon: Icons.wb_sunny_rounded,
                                 score: status.lightScore,
@@ -126,7 +126,7 @@ class UserPlantCard extends StatelessWidget {
                                 runningCommandId:
                                     plant.runningCommands['LIGHT']?.toInt(),
                               ),
-                              SizedBox(width: 15),
+                              SizedBox(width: 10),
                               PlantStatusBtn(
                                 icon: Icons.water_drop_rounded,
                                 score: status.humidityScore,

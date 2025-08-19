@@ -57,7 +57,7 @@ class RegisterBottomBar extends StatelessWidget {
             PrimaryButton(
               label: label,
               onPressed: onPressed,
-              width: showSecondaryButton ? 230 : 350,
+              width: showSecondaryButton ? 180 : 300,
               height: 38,
               fontSize: 13,
               icon: showIcon ? (icon ?? defaultIcon) : null,
