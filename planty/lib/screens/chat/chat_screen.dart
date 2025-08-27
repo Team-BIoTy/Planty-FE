@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
 import 'package:planty/models/chat_message.dart';
+import 'package:planty/models/chat_mode.dart';
 import 'package:planty/models/chat_room_detail.dart';
 import 'package:planty/services/chat_service.dart';
 import 'package:planty/services/iot_device_service.dart';
@@ -10,7 +11,13 @@ import 'package:planty/widgets/custom_app_bar.dart';
 
 class ChatScreen extends StatefulWidget {
   final int chatRoomId;
-  const ChatScreen({super.key, required this.chatRoomId});
+  final ChatMode chatMode;
+
+  const ChatScreen({
+    super.key,
+    required this.chatRoomId,
+    this.chatMode = ChatMode.myplant,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -26,7 +33,11 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchChatRoomDetail();
+    if (widget.chatMode == ChatMode.qa) {
+      _fetchQaMessages();
+    } else {
+      _fetchChatRoomDetail();
+    }
   }
 
   Future<void> _fetchChatRoomDetail() async {
@@ -39,6 +50,32 @@ class _ChatScreenState extends State<ChatScreen> {
       _scrollToBottom(animated: false);
     } catch (e) {
       print('채팅방 상세 불러오기 실패: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _fetchQaMessages() async {
+    try {
+      final detail = await ChatService().fetchChatRoomDetail(widget.chatRoomId);
+      setState(() {
+        _chatRoomDetail = ChatRoomDetail(
+          chatRoomId: detail.chatRoomId,
+          userPlantId: -1,
+          userPlantNickname: '식물챗봇',
+          imageUrl: '',
+          personalityLabel: null,
+          personalityEmoji: null,
+          personalityColor: null,
+          sensorLogId: null,
+          plantEnvStandardsId: null,
+          messages: detail.messages,
+          plantInfoDetail: null,
+        );
+        _isLoading = false;
+      });
+      _scrollToBottom(animated: false);
+    } catch (e) {
+      print('QA 메시지 불러오기 실패: $e');
       setState(() => _isLoading = false);
     }
   }
@@ -60,14 +97,21 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollToBottom();
 
     try {
-      final response = await ChatService().sendMessage(
-        chatRoomId: widget.chatRoomId,
-        message: content,
-        sensorLogId: _chatRoomDetail!.sensorLogId!,
-        plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
-        persona: _chatRoomDetail!.personalityLabel!,
-        plantInfo: _chatRoomDetail!.plantInfoDetail?.toJson(),
-      );
+      final response =
+          widget.chatMode == ChatMode.myplant
+              ? await ChatService().sendMessage(
+                chatRoomId: widget.chatRoomId,
+                message: content,
+                sensorLogId: _chatRoomDetail!.sensorLogId!,
+                plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
+                persona: _chatRoomDetail!.personalityLabel!,
+                plantInfo: _chatRoomDetail!.plantInfoDetail?.toJson(),
+              )
+              : await ChatService().sendQaMessage(
+                chatRoomId: widget.chatRoomId,
+                message: content,
+              );
+
       setState(() {
         _chatRoomDetail?.messages.add(response);
         _isBotTyping = false;
@@ -126,6 +170,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final messages = _chatRoomDetail?.messages ?? [];
+    print(_chatRoomDetail?.messages);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -181,25 +226,28 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
       ),
-      floatingActionButton: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 155, left: 38),
-          child: ElevatedButton.icon(
-            onPressed: _refreshSensorData,
-            icon: Icon(Icons.refresh),
-            label: Text('최신 센서 데이터 불러오기'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: AppColors.primary,
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-            ),
-          ),
-        ),
-      ),
+      floatingActionButton:
+          widget.chatMode == ChatMode.myplant
+              ? Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 155, left: 38),
+                  child: ElevatedButton.icon(
+                    onPressed: _refreshSensorData,
+                    icon: Icon(Icons.refresh),
+                    label: Text('최신 센서 데이터 불러오기'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.primary,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              : null,
     );
   }
 }

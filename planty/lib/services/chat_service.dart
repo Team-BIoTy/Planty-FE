@@ -103,4 +103,28 @@ class ChatService {
       throw Exception('메시지 전송 실패');
     }
   }
+
+  Future<ChatMessage> sendQaMessage({
+    required int chatRoomId,
+    required String message,
+  }) async {
+    final token = await _storage.read(key: 'token');
+    if (token == null) throw Exception('토큰 없음');
+
+    final response = await http.post(
+      Uri.parse('$_baseUrl/chats/qa'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'chatRoomId': chatRoomId, 'userInput': message}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      return ChatMessage.fromJson(data);
+    } else {
+      throw Exception('QA 메시지 전송 실패: ${response.statusCode}');
+    }
+  }
 }

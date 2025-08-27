@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
+import 'package:planty/models/chat_mode.dart';
 import 'package:planty/models/user_plant_summary_response.dart';
 import 'package:planty/screens/chat/chat_screen.dart';
 import 'package:planty/services/chat_service.dart';
@@ -44,7 +45,13 @@ class _SelectUserPlantScreenState extends State<SelectUserPlantScreen> {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => ChatScreen(chatRoomId: chatRoomId)),
+        MaterialPageRoute(
+          builder:
+              (_) => ChatScreen(
+                chatRoomId: chatRoomId,
+                chatMode: ChatMode.myplant,
+              ),
+        ),
       );
     } catch (e) {
       print('채팅방 생성 실패: $e');

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planty/constants/colors.dart';
+import 'package:planty/models/chat_mode.dart';
 import 'package:planty/models/chat_room.dart';
 import 'package:planty/screens/chat/chat_screen.dart';
 import 'package:planty/screens/chat/select_user_plant_screen.dart';
@@ -79,7 +80,11 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ChatScreen(chatRoomId: chatRoomId),
+                        builder:
+                            (_) => ChatScreen(
+                              chatRoomId: chatRoomId,
+                              chatMode: ChatMode.qa,
+                            ),
                       ),
                     );
                   } catch (e) {
@@ -178,6 +183,10 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                                     builder:
                                         (_) => ChatScreen(
                                           chatRoomId: chat.chatRoomId,
+                                          chatMode:
+                                              chat.isQa
+                                                  ? ChatMode.qa
+                                                  : ChatMode.myplant,
                                         ),
                                   ),
                                 );
