@@ -4,6 +4,7 @@ class ChatRoom {
   final String lastMessage;
   final DateTime lastSentAt;
   final String imageUrl;
+  bool get isQa => userPlantNickname == '식물챗봇';
 
   ChatRoom({
     required this.chatRoomId,

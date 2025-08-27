@@ -21,20 +21,25 @@ class EnvironmentReport {
     List<SensorDataPoint> parsePoints(String key) =>
         (json[key] as List).map((e) => SensorDataPoint.fromJson(e)).toList();
 
+    Map<String, Map<String, double>> parseRecommended(
+      Map<String, dynamic> input,
+    ) {
+      return input.map((key, value) {
+        final map = value as Map<String, dynamic>;
+        return MapEntry(key, {
+          'min': (map['min'] as num).toDouble(),
+          'max': (map['max'] as num).toDouble(),
+        });
+      });
+    }
+
     return EnvironmentReport(
       plantName: json['plantName'],
       autoMode: json['autoMode'],
       temperature: parsePoints('temperature'),
       light: parsePoints('light'),
       humidity: parsePoints('humidity'),
-      recommended: Map<String, Map<String, double>>.from(
-        json['recommended'].map(
-          (key, value) => MapEntry(key, {
-            'min': value['min'].toDouble(),
-            'max': value['max'].toDouble(),
-          }),
-        ),
-      ),
+      recommended: parseRecommended(json['recommended']),
     );
   }
 }
