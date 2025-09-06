@@ -37,6 +37,38 @@ class ChatInputField extends StatelessWidget {
                     hintStyle: TextStyle(color: AppColors.grey3, fontSize: 14),
                     hoverColor: AppColors.primary,
                     prefixIcon: GestureDetector(
+                      onTap: () {
+                        final nextType = selectedType == "slm" ? "llm" : "slm";
+                        onTypeChanged(nextType);
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(width: 8),
+                          Icon(
+                            selectedType == "llm"
+                                ? Icons.bolt
+                                : Icons.auto_awesome,
+                            color: AppColors.primary,
+                            size: 18,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            selectedType.toUpperCase(),
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                        ],
+                      ),
+                    ),
+                    prefixIconConstraints: BoxConstraints(
+                      minWidth: 0,
+                      minHeight: 0,
+                    ),
                   ),
                   style: TextStyle(fontSize: 14),
                   cursorColor: AppColors.primary,
