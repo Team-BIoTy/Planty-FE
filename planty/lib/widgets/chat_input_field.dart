@@ -4,11 +4,15 @@ import 'package:planty/constants/colors.dart';
 class ChatInputField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String) onSend;
+  final String selectedType;
+  final void Function(String) onTypeChanged;
 
   const ChatInputField({
     super.key,
     required this.controller,
     required this.onSend,
+    required this.selectedType,
+    required this.onTypeChanged,
   });
 
   @override
@@ -20,7 +24,6 @@ class ChatInputField extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25),
@@ -33,6 +36,7 @@ class ChatInputField extends StatelessWidget {
                     hintText: '메시지를 입력하세요...',
                     hintStyle: TextStyle(color: AppColors.grey3, fontSize: 14),
                     hoverColor: AppColors.primary,
+                    prefixIcon: GestureDetector(
                   ),
                   style: TextStyle(fontSize: 14),
                   cursorColor: AppColors.primary,

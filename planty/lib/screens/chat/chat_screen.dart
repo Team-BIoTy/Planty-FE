@@ -218,31 +218,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                         ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("모델 선택: "),
-                  DropdownButton<String>(
-                    value: _selectedType,
-                    items: const [
-                      DropdownMenuItem(value: 'slm', child: Text('SLM')),
-                      DropdownMenuItem(value: 'llm', child: Text('LLM')),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedType = value;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
               Container(
                 color: Colors.white,
                 child: ChatInputField(
                   controller: _controller,
                   onSend: _sendMessage,
+                  selectedType: _selectedType,
+                  onTypeChanged: (value) {
+                    setState(() {
+                      _selectedType = value;
+                    });
+                  },
                 ),
               ),
             ],
