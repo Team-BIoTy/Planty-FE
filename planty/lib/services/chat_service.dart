@@ -79,6 +79,7 @@ class ChatService {
     required int plantEnvStandardsId,
     required String persona,
     required Map<String, dynamic>? plantInfo,
+    required String type,
   }) async {
     final token = await _storage.read(key: 'token');
     final response = await http.post(
@@ -93,6 +94,7 @@ class ChatService {
         'plantEnvStandardsId': plantEnvStandardsId,
         'persona': persona,
         'plantInfo': plantInfo,
+        'type': type,
       }),
     );
 
@@ -107,6 +109,7 @@ class ChatService {
   Future<ChatMessage> sendQaMessage({
     required int chatRoomId,
     required String message,
+    required String type,
   }) async {
     final token = await _storage.read(key: 'token');
     if (token == null) throw Exception('토큰 없음');
@@ -117,7 +120,11 @@ class ChatService {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'chatRoomId': chatRoomId, 'userInput': message}),
+      body: jsonEncode({
+        'chatRoomId': chatRoomId,
+        'userInput': message,
+        'type': type,
+      }),
     );
 
     if (response.statusCode == 200) {

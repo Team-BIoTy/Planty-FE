@@ -29,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
   bool _isBotTyping = false;
+  String _selectedType = 'llm';
 
   @override
   void initState() {
@@ -106,10 +107,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
                 persona: _chatRoomDetail!.personalityLabel!,
                 plantInfo: _chatRoomDetail!.plantInfoDetail?.toJson(),
+                type: _selectedType,
               )
               : await ChatService().sendQaMessage(
                 chatRoomId: widget.chatRoomId,
                 message: content,
+                type: _selectedType,
               );
 
       setState(() {
@@ -214,6 +217,26 @@ class _ChatScreenState extends State<ChatScreen> {
                             );
                           },
                         ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("모델 선택: "),
+                  DropdownButton<String>(
+                    value: _selectedType,
+                    items: const [
+                      DropdownMenuItem(value: 'slm', child: Text('SLM')),
+                      DropdownMenuItem(value: 'llm', child: Text('LLM')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedType = value;
+                        });
+                      }
+                    },
+                  ),
+                ],
               ),
               Container(
                 color: Colors.white,
