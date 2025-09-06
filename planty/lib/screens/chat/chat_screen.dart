@@ -29,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
   bool _isBotTyping = false;
+  String _selectedType = 'llm';
 
   @override
   void initState() {
@@ -106,10 +107,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 plantEnvStandardsId: _chatRoomDetail!.plantEnvStandardsId!,
                 persona: _chatRoomDetail!.personalityLabel!,
                 plantInfo: _chatRoomDetail!.plantInfoDetail?.toJson(),
+                type: _selectedType,
               )
               : await ChatService().sendQaMessage(
                 chatRoomId: widget.chatRoomId,
                 message: content,
+                type: _selectedType,
               );
 
       setState(() {
@@ -220,6 +223,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: ChatInputField(
                   controller: _controller,
                   onSend: _sendMessage,
+                  selectedType: _selectedType,
+                  onTypeChanged: (value) {
+                    setState(() {
+                      _selectedType = value;
+                    });
+                  },
                 ),
               ),
             ],
