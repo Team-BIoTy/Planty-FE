@@ -95,4 +95,24 @@ class AuthService {
       throw Exception('유저 정보 불러오기 실패');
     }
   }
+
+  Future<void> updateAdafruitAccount({
+    required String token,
+    required String username,
+    required String apiKey,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$_baseUrl/auth/adafruit'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'username': username, 'apiKey': apiKey}),
+    );
+
+    if (response.statusCode != 200) {
+      final msg = utf8.decode(response.bodyBytes);
+      throw Exception('Adafruit 계정 업데이트 실패: $msg');
+    }
+  }
 }
