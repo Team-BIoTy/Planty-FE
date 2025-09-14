@@ -110,6 +110,10 @@ class _MyScreenState extends State<MyScreen> {
               child: ListView(
                 children: [
                   _buildMenuItem("비밀번호 변경", onTap: _showChangePasswordDialog),
+                  _buildMenuItem(
+                    "Adafruit 계정 등록/수정",
+                    onTap: _showAdafruitDialog,
+                  ),
                   _buildMenuItem("로그아웃", onTap: _logout),
                   _buildMenuItem("탈퇴하기", onTap: _confirmDeleteAccount),
                 ],
@@ -242,6 +246,103 @@ class _MyScreenState extends State<MyScreen> {
                   }
                 },
                 child: Text('변경', style: TextStyle(color: AppColors.primary)),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showAdafruitDialog() {
+    String username = '';
+    String apiKey = '';
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text(
+              'Adafruit 계정 등록',
+              style: TextStyle(
+                fontSize: 18,
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  style: TextStyle(color: AppColors.primary),
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    labelStyle: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 14,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.primary),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) => username = value,
+                ),
+                TextField(
+                  style: TextStyle(color: AppColors.primary),
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'API Key',
+                    labelStyle: TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 14,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.primary),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) => apiKey = value,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('취소', style: TextStyle(color: AppColors.primary)),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final token = await storage.read(key: 'token');
+                  if (token != null) {
+                    try {
+                      await authService.updateAdafruitAccount(
+                        token: token,
+                        username: username,
+                        apiKey: apiKey,
+                      );
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Adafruit 계정이 저장되었습니다!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('저장 실패: $e')));
+                    }
+                  }
+                },
+                child: Text('저장', style: TextStyle(color: AppColors.primary)),
               ),
             ],
           ),
